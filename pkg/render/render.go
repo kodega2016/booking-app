@@ -8,7 +8,7 @@ import (
 )
 
 func RenderTemplates(w http.ResponseWriter, tmpl string) {
-	t, err := template.ParseFiles("./templates/" + tmpl)
+	t, err := template.ParseFiles("./templates/"+tmpl, "./templates/base.layout.tmpl")
 	if err != nil {
 		fmt.Println("failed to parse the template")
 	}
