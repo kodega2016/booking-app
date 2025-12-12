@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+// RenderTemplatesTest(this is old approach without caching)
 func RenderTemplatesTest(w http.ResponseWriter, tmpl string) {
 	t, err := template.ParseFiles("./templates/"+tmpl, "./templates/base.layout.tmpl")
 	if err != nil {
@@ -19,6 +20,7 @@ func RenderTemplatesTest(w http.ResponseWriter, tmpl string) {
 // tc holds the template cache
 var tc = make(map[string]*template.Template)
 
+// RenderTemplates render tmpl template
 func RenderTemplates(w http.ResponseWriter, t string) {
 	var tmpl *template.Template
 	var err error
@@ -44,6 +46,7 @@ func RenderTemplates(w http.ResponseWriter, t string) {
 	}
 }
 
+// createTemplateCache create local template cache
 func createTemplateCache(t string) error {
 	templates := []string{
 		fmt.Sprintf("./templates/%s", t), "./templates/base.layout.tmpl",
