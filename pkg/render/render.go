@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	"booking-app/pkg/config"
+	"booking-app/pkg/models"
 )
 
 var app *config.AppConfig
@@ -17,7 +18,7 @@ func NewRenderTemplate(a *config.AppConfig) {
 	app = a
 }
 
-func RenderTemplate(w http.ResponseWriter, templ string) {
+func RenderTemplate(w http.ResponseWriter, templ string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 
 	if app.UseCache {
@@ -34,7 +35,7 @@ func RenderTemplate(w http.ResponseWriter, templ string) {
 
 	// render template with tempate data
 	buff := new(bytes.Buffer)
-	err := t.Execute(buff, nil)
+	err := t.Execute(buff, td)
 	if err != nil {
 		log.Fatal(err)
 	}

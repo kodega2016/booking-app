@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"booking-app/pkg/config"
+	"booking-app/pkg/models"
 	"booking-app/pkg/render"
 )
 
@@ -28,9 +29,13 @@ func NewHandler(r *Repository) {
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home.page.tmpl")
+	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
 func About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "about.page.tmpl")
+	stringMap := map[string]string{}
+	stringMap["test"] = "This is just a test data"
+	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
