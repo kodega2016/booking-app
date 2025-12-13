@@ -18,6 +18,13 @@ func NewRenderTemplate(a *config.AppConfig) {
 	app = a
 }
 
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+	td.StringMap = map[string]string{
+		"author": "kodega",
+	}
+	return td
+}
+
 func RenderTemplate(w http.ResponseWriter, templ string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 
@@ -35,6 +42,7 @@ func RenderTemplate(w http.ResponseWriter, templ string, td *models.TemplateData
 
 	// render template with tempate data
 	buff := new(bytes.Buffer)
+	td = AddDefaultData(td)
 	err := t.Execute(buff, td)
 	if err != nil {
 		log.Fatal(err)
