@@ -1,11 +1,13 @@
 {{template "base" .}}
 
 {{define "content"}}
-  <div class="row">
-    <div class="col-md-12">
-    <h1 class="mt-5">welcome to the home page</h1>
-    <p class="lead">this is a simple home page template using bootstrap.</p>
-    <p>{{index .StringMap "author"}}</p>
+  <div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mt-5">welcome to the home page</h1>
+            <p class="lead">this is a simple home page template using bootstrap.</p>
+            <p>{{index .StringMap "author"}}</p>
+        </div>
     </div>
-</div>
+ </div>
 {{end}}

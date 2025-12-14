@@ -28,14 +28,7 @@ func main() {
 	repo := handlers.NewRepository(&app)
 	handlers.NewHandler(repo)
 
-	// http.HandleFunc("/", handlers.Repo.Home)
-	// http.HandleFunc("/about", handlers.Repo.About)
-
 	fmt.Printf("server is running on port %d\n", port)
-	// err = http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
