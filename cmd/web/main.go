@@ -23,6 +23,7 @@ func main() {
 	// change this to true when in production
 	app.InProduction = false
 
+	// setting up session manager
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
 	session.Cookie.Persist = true
@@ -32,6 +33,7 @@ func main() {
 	// setting session to app config
 	app.Session = session
 
+	// create template cache
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("failed to create template cache")
@@ -45,8 +47,8 @@ func main() {
 	repo := handlers.NewRepository(&app)
 	handlers.NewHandler(repo)
 
+	// starting the server
 	fmt.Printf("server is running on port %d\n", port)
-
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
 		Handler: routes(&app),
