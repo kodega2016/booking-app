@@ -6,7 +6,13 @@
     <div class="col-md-12">
     <h1 class="mt-5">About Us</h1>
     <p class="lead">This is the about page template using Bootstrap.</p>
-    <p>{{index .StringMap "test"}}</p>
+    <p>
+    {{if ne (index .StringMap "remote_ip") ""}}
+        Your IP address is: {{index .StringMap "remote_ip"}}
+    {{else}}
+        Could not determine your IP address.
+    {{end}}
+    </p>
     </div>
   </div>
 </div>

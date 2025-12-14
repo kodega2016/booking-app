@@ -28,14 +28,15 @@ func NewHandler(r *Repository) {
 	Repo = r
 }
 
-func (repo Repository) Home(w http.ResponseWriter, r *http.Request) {
-	repo.App.Session.Put(r.Context(), "is_first_time", false)
+func (repo *Repository) Home(w http.ResponseWriter, r *http.Request) {
+	remoteIP := r.RemoteAddr
+	repo.App.Session.Put(r.Context(), "remote_ip", remoteIP)
 	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
-func (repo Repository) About(w http.ResponseWriter, r *http.Request) {
+func (repo *Repository) About(w http.ResponseWriter, r *http.Request) {
 	stringMap := map[string]string{}
-	stringMap["test"] = "This is just a test data"
+	stringMap["remote_ip"] = repo.App.Session.GetString(r.Context(), "remote_ip")
 	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
 		StringMap: stringMap,
 	})

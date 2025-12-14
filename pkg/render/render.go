@@ -19,9 +19,6 @@ func NewRenderTemplate(a *config.AppConfig) {
 }
 
 func AddDefaultData(td *models.TemplateData) *models.TemplateData {
-	td.StringMap = map[string]string{
-		"author": "kodega",
-	}
 	return td
 }
 
