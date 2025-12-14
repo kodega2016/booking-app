@@ -28,11 +28,11 @@ func NewHandler(r *Repository) {
 	Repo = r
 }
 
-func Home(w http.ResponseWriter, r *http.Request) {
+func (repo Repository) Home(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
-func About(w http.ResponseWriter, r *http.Request) {
+func (repo Repository) About(w http.ResponseWriter, r *http.Request) {
 	stringMap := map[string]string{}
 	stringMap["test"] = "This is just a test data"
 	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
