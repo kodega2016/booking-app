@@ -57,3 +57,7 @@ func (repo *Repository) Availability(w http.ResponseWriter, r *http.Request) {
 func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, "make-reservatipon.page.tmpl", &models.TemplateData{})
 }
+
+func (repo *Repository) Contact(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "contact.page.tmpl", &models.TemplateData{})
+}
