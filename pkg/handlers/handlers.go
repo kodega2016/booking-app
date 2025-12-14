@@ -29,6 +29,7 @@ func NewHandler(r *Repository) {
 }
 
 func (repo Repository) Home(w http.ResponseWriter, r *http.Request) {
+	repo.App.Session.Put(r.Context(), "is_first_time", false)
 	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
