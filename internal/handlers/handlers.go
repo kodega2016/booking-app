@@ -2,14 +2,13 @@
 package handlers
 
 import (
+	"booking-app/internal/config"
+	"booking-app/internal/models"
+	"booking-app/internal/render"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-
-	"booking-app/pkg/config"
-	"booking-app/pkg/models"
-	"booking-app/pkg/render"
 )
 
 var Repo *Repository

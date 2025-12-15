@@ -2,14 +2,13 @@
 package render
 
 import (
+	"booking-app/internal/config"
+	"booking-app/internal/models"
 	"bytes"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
-
-	"booking-app/pkg/config"
-	"booking-app/pkg/models"
 
 	"github.com/justinas/nosurf"
 )

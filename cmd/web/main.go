@@ -1,14 +1,13 @@
 package main
 
 import (
+	"booking-app/internal/config"
+	"booking-app/internal/handlers"
+	"booking-app/internal/render"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
-
-	"booking-app/pkg/config"
-	"booking-app/pkg/handlers"
-	"booking-app/pkg/render"
 
 	"github.com/alexedwards/scs/v2"
 )
