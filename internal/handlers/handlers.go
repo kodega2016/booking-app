@@ -78,8 +78,13 @@ func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Requ
 }
 
 func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
+	var emptyReservation models.Reservation
+	data := make(map[string]any)
+	data["reservation"] = emptyReservation
+
 	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
 		Form: forms.New(nil),
+		Data: data,
 	})
 }
 
@@ -98,8 +103,6 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 		Email:     form.Get("email"),
 		Phone:     form.Get("phone"),
 	}
-
-	fmt.Println("reservation:", reservation)
 
 	form.Has("first_name")
 	form.Has("last_name")
