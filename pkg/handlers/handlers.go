@@ -2,6 +2,9 @@
 package handlers
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 
 	"booking-app/pkg/config"
@@ -49,7 +52,29 @@ func (repo *Repository) Availability(w http.ResponseWriter, r *http.Request) {
 }
 
 func (repo *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
+	startDate := r.Form.Get("start")
+	endDate := r.Form.Get("end")
+
+	fmt.Println("start date:", startDate)
+	fmt.Println("end date:", endDate)
+
 	w.Write([]byte("posted to search availability..."))
+}
+
+func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Request) {
+	resp := JsonResponse{
+		Ok:      true,
+		Message: "Available",
+	}
+
+	out, err := json.MarshalIndent(resp, "", "\n")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(out)
+
 }
 
 func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
@@ -58,4 +83,9 @@ func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 
 func (repo *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, r, "contact.page.tmpl", &models.TemplateData{})
+}
+
+type JsonResponse struct {
+	Ok      bool   `json:"ok"`
+	Message string `json:"message"`
 }
