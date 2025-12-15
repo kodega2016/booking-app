@@ -2,13 +2,15 @@
 package handlers
 
 import (
-	"booking-app/internal/config"
-	"booking-app/internal/models"
-	"booking-app/internal/render"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+
+	"booking-app/internal/config"
+	"booking-app/internal/forms"
+	"booking-app/internal/models"
+	"booking-app/internal/render"
 )
 
 var Repo *Repository
@@ -73,11 +75,47 @@ func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Requ
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(out)
-
 }
 
 func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{})
+	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+	})
+}
+
+func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	form := forms.New(r.PostForm)
+
+	reservation := models.Reservation{
+		FirstName: form.Get("first_name"),
+		LastName:  form.Get("last_name"),
+		Email:     form.Get("email"),
+		Phone:     form.Get("phone"),
+	}
+
+	fmt.Println("reservation:", reservation)
+
+	form.Has("first_name")
+	form.Has("last_name")
+
+	isValid := form.Valid()
+	if isValid {
+		fmt.Println("form is valid...")
+	} else {
+		data := make(map[string]any)
+		data["reservation"] = reservation
+
+		render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+	}
 }
 
 func (repo *Repository) Contact(w http.ResponseWriter, r *http.Request) {
