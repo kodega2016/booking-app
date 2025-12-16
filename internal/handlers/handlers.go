@@ -104,10 +104,12 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 		Phone:     form.Get("phone"),
 	}
 
-	form.Has("first_name")
-	form.Has("last_name")
+	// check required fields
+	form.Required("first_name", "last_name", "email")
 
+	// check if the form is valid or not
 	isValid := form.Valid()
+
 	if isValid {
 		fmt.Println("form is valid...")
 	} else {
