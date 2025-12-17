@@ -63,7 +63,7 @@ func (repo *Repository) PostAvailability(w http.ResponseWriter, r *http.Request)
 }
 
 func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Request) {
-	resp := JsonResponse{
+	resp := JSONResponse{
 		Ok:      true,
 		Message: "Available",
 	}
@@ -147,7 +147,7 @@ func (repo *Repository) ReservationSummary(w http.ResponseWriter, r *http.Reques
 	})
 }
 
-type JsonResponse struct {
+type JSONResponse struct {
 	Ok      bool   `json:"ok"`
 	Message string `json:"message"`
 }
