@@ -134,8 +134,8 @@ func (repo *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 func (repo *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) {
 	reservation, ok := repo.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
-		log.Println("cannot get the reservation from the session")
-		return
+		repo.App.Session.Put(r.Context(), "error", "cannot get the reservation-summary")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 	}
 
 	data := make(map[string]any)

@@ -11,7 +11,7 @@ type TemplateData struct {
 	Data      map[string]any
 	CSRFToken string
 	Flash     string
-	Warnng    string
+	Warning   string
 	Error     string
 	Form      *forms.Form
 }

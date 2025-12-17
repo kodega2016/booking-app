@@ -2,13 +2,14 @@
 package render
 
 import (
-	"booking-app/internal/config"
-	"booking-app/internal/models"
 	"bytes"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
+
+	"booking-app/internal/config"
+	"booking-app/internal/models"
 
 	"github.com/justinas/nosurf"
 )
@@ -21,6 +22,9 @@ func NewRenderTemplate(a *config.AppConfig) {
 
 func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
 	td.CSRFToken = nosurf.Token(r)
+	td.Flash = app.Session.PopString(r.Context(), "flash")
+	td.Error = app.Session.PopString(r.Context(), "error")
+	td.Warning = app.Session.PopString(r.Context(), "warning")
 	return td
 }
 

@@ -71,7 +71,7 @@
     crossorigin="anonymous"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.2/dist/js/datepicker-full.min.js"></script>
-<script src="https://unpkg.com/notie"></script>
+<script src="https://cdn.jsdelivr.net/npm/notie@4.3.1/dist/notie.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
 
 <script>
@@ -96,9 +96,11 @@
     })();
 
     const elem = document.getElementById('reservation-dates');
-    const rangePicker = new DateRangePicker(elem, {
-        format: "yyyy-mm-dd",
-    });
+    if (elem) {
+        const rangePicker = new DateRangePicker(elem, {
+            format: "yyyy-mm-dd",
+        });
+    }
 
     function notify(msg, msgType) {
         notie.alert({
@@ -115,6 +117,18 @@
             confirmButtonText: confirmationButtonText
         })
     }
+
+    {{with .Error}}
+      notify("{{.}}", "error");
+    {{end}}
+
+    {{with .Flash}}
+      notify("{{.}}", "success");
+    {{end}}
+
+    {{with .Warning}}
+      notify("{{.}}", "warning");
+    {{end}}
 
     function Prompt() {
         let toast = function (c) {
