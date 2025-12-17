@@ -114,7 +114,8 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 	isValid := form.Valid()
 
 	if isValid {
-		fmt.Println("form is valid...")
+		repo.App.Session.Put(r.Context(), "reservation", reservation)
+		http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)
 	} else {
 		data := make(map[string]any)
 		data["reservation"] = reservation
@@ -128,6 +129,20 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 
 func (repo *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, r, "contact.page.tmpl", &models.TemplateData{})
+}
+
+func (repo *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) {
+	reservation, ok := repo.App.Session.Get(r.Context(), "reservation").(models.Reservation)
+	if !ok {
+		log.Println("cannot get the reservation from the session")
+		return
+	}
+
+	data := make(map[string]any)
+	data["reservation"] = reservation
+	render.RenderTemplate(w, r, "reservation-summary.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 }
 
 type JsonResponse struct {

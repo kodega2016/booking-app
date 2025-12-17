@@ -1,26 +1,33 @@
 package main
 
 import (
-	"booking-app/internal/config"
-	"booking-app/internal/handlers"
-	"booking-app/internal/render"
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
+
+	"booking-app/internal/config"
+	"booking-app/internal/handlers"
+	"booking-app/internal/models"
+	"booking-app/internal/render"
 
 	"github.com/alexedwards/scs/v2"
 )
 
 const port = 8080
 
-var app config.AppConfig
-var session *scs.SessionManager
+var (
+	app     config.AppConfig
+	session *scs.SessionManager
+)
 
 func main() {
-
 	// change this to true when in production
 	app.InProduction = false
+
+	// setting up gob to handler complex data type
+	gob.Register(models.Reservation{})
 
 	// setting up session manager
 	session = scs.New()
