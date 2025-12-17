@@ -23,6 +23,24 @@ var (
 )
 
 func main() {
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	// starting the server
+	fmt.Printf("server is running on port %d\n", port)
+	srv := &http.Server{
+		Addr:    fmt.Sprintf(":%d", port),
+		Handler: routes(&app),
+	}
+
+	err = srv.ListenAndServe()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
 	// change this to true when in production
 	app.InProduction = false
 
@@ -43,6 +61,7 @@ func main() {
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("failed to create template cache")
+		return err
 	}
 
 	app.TemplateCache = tc
@@ -52,16 +71,5 @@ func main() {
 
 	repo := handlers.NewRepository(&app)
 	handlers.NewHandler(repo)
-
-	// starting the server
-	fmt.Printf("server is running on port %d\n", port)
-	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
-		Handler: routes(&app),
-	}
-
-	err = srv.ListenAndServe()
-	if err != nil {
-		log.Fatal(err)
-	}
+	return nil
 }
