@@ -138,6 +138,8 @@ func (repo *Repository) ReservationSummary(w http.ResponseWriter, r *http.Reques
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 	}
 
+	// remove the reservation from session
+	repo.App.Session.Remove(r.Context(), "reservation")
 	data := make(map[string]any)
 	data["reservation"] = reservation
 	render.RenderTemplate(w, r, "reservation-summary.page.tmpl", &models.TemplateData{
