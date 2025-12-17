@@ -5,6 +5,6 @@ import "testing"
 func TestRun(t *testing.T) {
 	err := run()
 	if err != nil {
-		t.Error("failed to run()")
+		t.Error("failed to execute run()!")
 	}
 }
