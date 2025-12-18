@@ -60,3 +60,15 @@ func getSession() (*http.Request, error) {
 	r = r.WithContext(ctx)
 	return r, nil
 }
+
+func TestCreateTemplateCache(t *testing.T) {
+	pathToTemplates = "./../../templates"
+	_, err := CreateTemplateCache()
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func TestNewRenderTemplate(t *testing.T) {
+	NewRenderTemplate(&testApp)
+}
