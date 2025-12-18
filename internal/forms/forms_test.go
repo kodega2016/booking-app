@@ -1,0 +1,44 @@
+package forms
+
+import (
+	"net/http/httptest"
+	"net/url"
+	"testing"
+)
+
+func TestForm_Valid(t *testing.T) {
+	r := httptest.NewRequest("POST", "/random", nil)
+	form := New(r.PostForm)
+	isValid := form.Valid()
+
+	if !isValid {
+		t.Error("got invalid when it should be valid")
+	}
+}
+
+func TestForm_Required(t *testing.T) {
+	r := httptest.NewRequest("POST", "/random", nil)
+	form := New(r.PostForm)
+
+	form.Required("name", "email")
+	isValid := form.Valid()
+
+	if isValid {
+		t.Error("got form valid when required fields are missing...")
+	}
+
+	data := url.Values{}
+	data.Add("name", "khadga shrestha")
+	data.Add("email", "example@example.com")
+	r = httptest.NewRequest("POST", "/random", nil)
+	r.PostForm = data
+
+	form = New(r.PostForm)
+	form.Required("name", "email")
+	isValid = form.Valid()
+
+	if !isValid {
+		t.Error("got form invalid when it should be valid")
+	}
+
+}
