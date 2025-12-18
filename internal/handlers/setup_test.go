@@ -55,9 +55,6 @@ func getRoutes() http.Handler {
 	render.NewRenderTemplate(&app)
 
 	mux := chi.NewRouter()
-	// use middleware
-	// mux.Use(WriteToConsole)
-	// mux.Use(NoSurf)
 	mux.Use(SessionLoad)
 	//
 	// static file server
