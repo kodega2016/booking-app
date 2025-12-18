@@ -6,6 +6,28 @@ import (
 	"testing"
 )
 
+func TestRenderTemplate(t *testing.T) {
+	pathToTemplates = "./../../templates"
+	tc, err := CreateTemplateCache()
+	if err != nil {
+		t.Error(err)
+	}
+
+	app.TemplateCache = tc
+	r, _ := getSession()
+
+	var ww myWriter
+	err = RenderTemplate(&ww, r, "home.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = RenderTemplate(&ww, r, "non-existence.page.tmpl", &models.TemplateData{})
+	if err == nil {
+		t.Error("rendered template that doesnot exist")
+	}
+}
+
 func TestAddDefaultData(t *testing.T) {
 	var td models.TemplateData
 	r, err := getSession()
