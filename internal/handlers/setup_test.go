@@ -49,14 +49,16 @@ func getRoutes() http.Handler {
 
 	app.TemplateCache = tc
 	app.UseCache = true
+	repo := NewRepository(&app)
+	NewHandler(repo)
+
 	render.NewRenderTemplate(&app)
 
 	mux := chi.NewRouter()
-	mux.Use(session.LoadAndSave)
 	// use middleware
 	// mux.Use(WriteToConsole)
 	// mux.Use(NoSurf)
-	// mux.Use(SessionLoad)
+	mux.Use(SessionLoad)
 	//
 	// static file server
 	fs := http.FileServer(http.Dir("./static/"))
@@ -75,6 +77,11 @@ func getRoutes() http.Handler {
 	mux.Get("/contact", Repo.Contact)
 
 	return mux
+}
+
+// SessionLoad loads and saves session data for current request
+func SessionLoad(next http.Handler) http.Handler {
+	return session.LoadAndSave(next)
 }
 
 func CreateTestTemplateCache() (map[string]*template.Template, error) {
