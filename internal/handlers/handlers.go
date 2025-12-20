@@ -9,6 +9,7 @@ import (
 
 	"booking-app/internal/config"
 	"booking-app/internal/forms"
+	"booking-app/internal/helpers"
 	"booking-app/internal/models"
 	"booking-app/internal/render"
 )
@@ -91,6 +92,7 @@ func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
+		helpers.ServerError(w, err)
 		log.Println(err)
 		return
 	}
@@ -134,6 +136,7 @@ func (repo *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 func (repo *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) {
 	reservation, ok := repo.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
+		repo.App.ErrorLog.Println("Cannot get the reservation from session")
 		repo.App.Session.Put(r.Context(), "error", "cannot get the reservation-summary")
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 	}
