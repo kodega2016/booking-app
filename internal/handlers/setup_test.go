@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -22,6 +23,8 @@ var (
 	session         *scs.SessionManager
 	pathToTemplates = "./../../templates"
 	functions       = template.FuncMap{}
+	infoLog         *log.Logger
+	errorLog        *log.Logger
 )
 
 func getRoutes() http.Handler {
@@ -40,6 +43,12 @@ func getRoutes() http.Handler {
 
 	// setting session to app config
 	app.Session = session
+
+	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 
 	// create template cache
 	tc, err := CreateTestTemplateCache()
