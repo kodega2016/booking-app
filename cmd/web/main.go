@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"booking-app/internal/config"
 	"booking-app/internal/handlers"
+	"booking-app/internal/helpers"
 	"booking-app/internal/models"
 	"booking-app/internal/render"
 
@@ -18,8 +20,10 @@ import (
 const port = 8080
 
 var (
-	app     config.AppConfig
-	session *scs.SessionManager
+	app      config.AppConfig
+	session  *scs.SessionManager
+	infoLog  *log.Logger
+	errorLog *log.Logger
 )
 
 func main() {
@@ -57,6 +61,12 @@ func run() error {
 	// setting session to app config
 	app.Session = session
 
+	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
+
 	// create template cache
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
@@ -68,8 +78,9 @@ func run() error {
 	app.UseCache = false
 
 	render.NewRenderTemplate(&app)
-
 	repo := handlers.NewRepository(&app)
 	handlers.NewHandler(repo)
+
+	helpers.NewHelpers(&app)
 	return nil
 }
