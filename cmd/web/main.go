@@ -9,10 +9,12 @@ import (
 	"time"
 
 	"booking-app/internal/config"
+	"booking-app/internal/driver"
 	"booking-app/internal/handlers"
 	"booking-app/internal/helpers"
 	"booking-app/internal/models"
 	"booking-app/internal/render"
+	"booking-app/internal/repository/dbrepo"
 
 	"github.com/alexedwards/scs/v2"
 )
@@ -27,10 +29,13 @@ var (
 )
 
 func main() {
-	err := run()
+	db, err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// close the database connection
+	defer db.SQL.Close()
 	// starting the server
 	fmt.Printf("server is running on port %d\n", port)
 	srv := &http.Server{
@@ -44,7 +49,7 @@ func main() {
 	}
 }
 
-func run() error {
+func run() (*driver.DB, error) {
 	// change this to true when in production
 	app.InProduction = false
 
@@ -71,16 +76,24 @@ func run() error {
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("failed to create template cache")
-		return err
+		return nil, err
 	}
 
 	app.TemplateCache = tc
 	app.UseCache = false
 
+	app.InfoLog.Println("connecting to the database...")
+	db, err := driver.ConnectSQL("host=localhost port=5432 user=kodega password=supersecret dbname=booking sslmode=disable")
+	if err != nil {
+		app.ErrorLog.Println(err)
+		return nil, err
+	}
+
 	render.NewRenderTemplate(&app)
 	repo := handlers.NewRepository(&app)
 	handlers.NewHandler(repo)
+	dbrepo.NewPostgresDBRepo(db.SQL, &app)
 
 	helpers.NewHelpers(&app)
-	return nil
+	return db, nil
 }
