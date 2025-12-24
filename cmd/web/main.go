@@ -55,6 +55,10 @@ func run() (*driver.DB, error) {
 
 	// setting up gob to handler complex data type
 	gob.Register(models.Reservation{})
+	gob.Register(models.User{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
+	gob.Register(models.RoomRestriction{})
 
 	// setting up session manager
 	session = scs.New()
