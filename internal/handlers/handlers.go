@@ -8,10 +8,13 @@ import (
 	"net/http"
 
 	"booking-app/internal/config"
+	"booking-app/internal/driver"
 	"booking-app/internal/forms"
 	"booking-app/internal/helpers"
 	"booking-app/internal/models"
 	"booking-app/internal/render"
+	"booking-app/internal/repository"
+	"booking-app/internal/repository/dbrepo"
 )
 
 var Repo *Repository
@@ -19,12 +22,14 @@ var Repo *Repository
 // Repository holds the Repository type
 type Repository struct {
 	App *config.AppConfig
+	DB  repository.DatabaseRepo
 }
 
 // NewRepository creates new NewRepository
-func NewRepository(app *config.AppConfig) *Repository {
+func NewRepository(app *config.AppConfig, db *driver.DB) *Repository {
 	return &Repository{
 		App: app,
+		DB:  dbrepo.NewPostgresDBRepo(db.SQL, app),
 	}
 }
 
