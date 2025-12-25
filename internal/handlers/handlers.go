@@ -3,7 +3,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -61,13 +60,48 @@ func (repo *Repository) Availability(w http.ResponseWriter, r *http.Request) {
 }
 
 func (repo *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
-	startDate := r.Form.Get("start")
-	endDate := r.Form.Get("end")
+	start := r.Form.Get("start")
+	end := r.Form.Get("end")
 
-	fmt.Println("start date:", startDate)
-	fmt.Println("end date:", endDate)
+	layout := "2006-01-02"
+	startDate, err := time.Parse(layout, start)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
 
-	w.Write([]byte("posted to search availability..."))
+	endDate, err := time.Parse(layout, end)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	rooms, err := repo.DB.SearchAvailabilityForAllRooms(startDate, endDate)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	if len(rooms) == 0 {
+		repo.App.Session.Put(r.Context(), "error", "No availability")
+		http.Redirect(w, r, "/search-availability", http.StatusSeeOther)
+		return
+	}
+
+	data := make(map[string]any)
+	data["rooms"] = rooms
+
+	res := models.Reservation{
+		StartDate: startDate,
+		EndDate:   endDate,
+	}
+
+	// store the reservation in session
+	repo.App.Session.Put(r.Context(), "reservation", res)
+
+	render.Template(w, r, "choose-room.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 }
 
 func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Request) {
@@ -160,12 +194,10 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 			RestrictionID: 1,
 		}
 
-		newRestrictionID, err := repo.DB.InsertRoomRestriction(restriction)
+		_, err = repo.DB.InsertRoomRestriction(restriction)
 		if err != nil {
 			helpers.ServerError(w, err)
 		}
-
-		fmt.Println("created restriction with id:", newRestrictionID)
 
 		repo.App.Session.Put(r.Context(), "reservation", reservation)
 		http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)
