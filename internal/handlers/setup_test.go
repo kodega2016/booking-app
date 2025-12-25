@@ -33,6 +33,10 @@ func getRoutes() http.Handler {
 
 	// setting up gob to handler complex data type
 	gob.Register(models.Reservation{})
+	gob.Register(models.User{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
+	gob.Register(models.RoomRestriction{})
 
 	// setting up session manager
 	session = scs.New()
@@ -61,7 +65,7 @@ func getRoutes() http.Handler {
 	repo := NewRepository(&app)
 	NewHandler(repo)
 
-	render.NewRenderTemplate(&app)
+	render.NewRenderer(&app)
 
 	mux := chi.NewRouter()
 	mux.Use(SessionLoad)

@@ -1,9 +1,10 @@
 package render
 
 import (
-	"booking-app/internal/models"
 	"net/http"
 	"testing"
+
+	"booking-app/internal/models"
 )
 
 func TestRenderTemplate(t *testing.T) {
@@ -17,12 +18,12 @@ func TestRenderTemplate(t *testing.T) {
 	r, _ := getSession()
 
 	var ww myWriter
-	err = RenderTemplate(&ww, r, "home.page.tmpl", &models.TemplateData{})
+	err = Template(&ww, r, "home.page.tmpl", &models.TemplateData{})
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = RenderTemplate(&ww, r, "non-existence.page.tmpl", &models.TemplateData{})
+	err = Template(&ww, r, "non-existence.page.tmpl", &models.TemplateData{})
 	if err == nil {
 		t.Error("rendered template that doesnot exist")
 	}
@@ -70,5 +71,5 @@ func TestCreateTemplateCache(t *testing.T) {
 }
 
 func TestNewRenderTemplate(t *testing.T) {
-	NewRenderTemplate(&testApp)
+	NewRenderer(&testApp)
 }

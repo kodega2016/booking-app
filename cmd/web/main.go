@@ -95,7 +95,7 @@ func run() (*driver.DB, error) {
 
 	app.InfoLog.Println("connected to the database")
 
-	render.NewRenderTemplate(&app)
+	render.NewRenderer(&app)
 	repo := handlers.NewRepository(&app, db)
 	handlers.NewHandler(repo)
 	dbrepo.NewPostgresDBRepo(db.SQL, &app)
