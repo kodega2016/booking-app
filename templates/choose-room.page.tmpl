@@ -9,8 +9,7 @@
             <h3>Choose Your Room</h3>
             {{range $rooms}}
                 <div>
-                    <h2>{{.RoomName}}</h2>
-                    <p>Price: ${{.Price}}</p>
+                    <h3><a href="/choose-room/{{.ID}}">{{.RoomName}}</a></h3>
                 </div>
             {{end}}
     

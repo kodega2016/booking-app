@@ -3,6 +3,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"strconv"
@@ -16,6 +17,8 @@ import (
 	"booking-app/internal/render"
 	"booking-app/internal/repository"
 	"booking-app/internal/repository/dbrepo"
+
+	"github.com/go-chi/chi/v5"
 )
 
 var Repo *Repository
@@ -120,13 +123,33 @@ func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Requ
 }
 
 func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
-	var emptyReservation models.Reservation
+	res, ok := repo.App.Session.Get(r.Context(), "reservation").(models.Reservation)
+	if !ok {
+		helpers.ServerError(w, errors.New("cannot get the reservation from the session."))
+		return
+	}
+
+	room, err := repo.DB.GetRoomByID(res.RoomID)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+	res.Room.RoomName = room.RoomName
+
 	data := make(map[string]any)
-	data["reservation"] = emptyReservation
+	data["reservation"] = res
+
+	sd := res.StartDate.Format("2006-01-02")
+	ed := res.EndDate.Format("2006-01-02")
+
+	stringMap := map[string]string{}
+	stringMap["start_date"] = sd
+	stringMap["end_date"] = ed
 
 	render.Template(w, r, "make-reservation.page.tmpl", &models.TemplateData{
-		Form: forms.New(nil),
-		Data: data,
+		Form:      forms.New(nil),
+		Data:      data,
+		StringMap: stringMap,
 	})
 }
 
@@ -231,6 +254,28 @@ func (repo *Repository) ReservationSummary(w http.ResponseWriter, r *http.Reques
 	render.Template(w, r, "reservation-summary.page.tmpl", &models.TemplateData{
 		Data: data,
 	})
+}
+
+func (repo *Repository) ChooseRoom(w http.ResponseWriter, r *http.Request) {
+	roomID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	res, ok := repo.App.Session.Get(r.Context(), "reservation").(models.Reservation)
+	if !ok {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	res.RoomID = roomID
+	data := make(map[string]any)
+	data["reservation"] = res
+
+	// again put the reservation into the session
+	repo.App.Session.Put(r.Context(), "reservation", res)
+	http.Redirect(w, r, "/make-reservation", http.StatusSeeOther)
 }
 
 type JSONResponse struct {
