@@ -139,6 +139,9 @@ func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 	data := make(map[string]any)
 	data["reservation"] = res
 
+	// updating the session for Reservation
+	repo.App.Session.Put(r.Context(), "reservation", res)
+
 	sd := res.StartDate.Format("2006-01-02")
 	ed := res.EndDate.Format("2006-01-02")
 
@@ -154,6 +157,11 @@ func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 }
 
 func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
+	res, ok := repo.App.Session.Get(r.Context(), "reservation").(models.Reservation)
+	if !ok {
+		helpers.ServerError(w, errors.New("failed to get the reservation from the session"))
+	}
+
 	err := r.ParseForm()
 	if err != nil {
 		helpers.ServerError(w, err)
@@ -181,17 +189,15 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 		helpers.ServerError(w, err)
 	}
 
-	reservation := models.Reservation{
-		FirstName: form.Get("first_name"),
-		LastName:  form.Get("last_name"),
-		Email:     form.Get("email"),
-		Phone:     form.Get("phone"),
-		StartDate: startDate,
-		EndDate:   endDate,
-		RoomID:    roomID,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	}
+	res.FirstName = form.Get("first_name")
+	res.LastName = form.Get("last_name")
+	res.Email = form.Get("email")
+	res.Phone = form.Get("phone")
+	res.StartDate = startDate
+	res.EndDate = endDate
+	res.RoomID = roomID
+	res.CreatedAt = time.Now()
+	res.UpdatedAt = time.Now()
 
 	// check required fields
 	form.Required("first_name", "last_name", "email")
@@ -203,8 +209,7 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 	isValid := form.Valid()
 
 	if isValid {
-
-		newReservationID, err := repo.DB.InsertReservation(reservation)
+		newReservationID, err := repo.DB.InsertReservation(res)
 		if err != nil {
 			helpers.ServerError(w, err)
 		}
@@ -222,11 +227,11 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 			helpers.ServerError(w, err)
 		}
 
-		repo.App.Session.Put(r.Context(), "reservation", reservation)
+		repo.App.Session.Put(r.Context(), "reservation", res)
 		http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)
 	} else {
 		data := make(map[string]any)
-		data["reservation"] = reservation
+		data["reservation"] = res
 
 		render.Template(w, r, "make-reservation.page.tmpl", &models.TemplateData{
 			Form: form,
