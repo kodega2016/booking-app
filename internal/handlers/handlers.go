@@ -171,13 +171,15 @@ func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Requ
 func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 	res, ok := repo.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
-		helpers.ServerError(w, errors.New("cannot get the reservation from the session."))
+		repo.App.Session.Put(r.Context(), "error", "cannot get the reservation from the session.\n")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
 	room, err := repo.DB.GetRoomByID(res.RoomID)
 	if err != nil {
-		helpers.ServerError(w, err)
+		repo.App.Session.Put(r.Context(), "error", "cannot get the room.\n")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 	res.Room.RoomName = room.RoomName
