@@ -108,9 +108,44 @@ func (repo *Repository) PostAvailability(w http.ResponseWriter, r *http.Request)
 }
 
 func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Request) {
+	sd := r.Form.Get("start")
+	ed := r.Form.Get("end")
+	layout := "2006-01-02"
+
+	startDate, err := time.Parse(layout, sd)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	endDate, err := time.Parse(layout, ed)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	roomID, err := strconv.Atoi(r.Form.Get("room_id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	isAvailable, err := repo.DB.SearchAvailabilityByDatesByRoomID(startDate, endDate, roomID)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	var message string
+	if isAvailable {
+		message = "Available"
+	} else {
+		message = "Unavailable"
+	}
+
 	resp := JSONResponse{
-		Ok:      true,
-		Message: "Available",
+		Ok:      isAvailable,
+		Message: message,
 	}
 
 	out, err := json.MarshalIndent(resp, "", "\n")
@@ -170,10 +205,34 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 	}
 
 	form := forms.New(r.PostForm)
+	sd := r.Form.Get("start_date")
+	ed := r.Form.Get("end_date")
+
+	layout := "2006-01-02"
+	startDate, err := time.Parse(layout, sd)
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+
+	endDate, err := time.Parse(layout, ed)
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+
+	roomID, err := strconv.Atoi(r.Form.Get("room_id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+
 	res.FirstName = form.Get("first_name")
 	res.LastName = form.Get("last_name")
 	res.Email = form.Get("email")
 	res.Phone = form.Get("phone")
+	res.StartDate = startDate
+	res.EndDate = endDate
+	res.RoomID = roomID
+	res.CreatedAt = time.Now()
+	res.UpdatedAt = time.Now()
 
 	// check required fields
 	form.Required("first_name", "last_name", "email")
@@ -191,10 +250,10 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 		}
 
 		restriction := models.RoomRestriction{
-			StartDate:     res.StartDate,
-			EndDate:       res.EndDate,
+			StartDate:     startDate,
+			EndDate:       endDate,
 			ReservationID: newReservationID,
-			RoomID:        res.RoomID,
+			RoomID:        roomID,
 			RestrictionID: 1,
 		}
 
@@ -232,17 +291,8 @@ func (repo *Repository) ReservationSummary(w http.ResponseWriter, r *http.Reques
 	repo.App.Session.Remove(r.Context(), "reservation")
 	data := make(map[string]any)
 	data["reservation"] = reservation
-
-	stringMap := map[string]string{}
-	sd := reservation.StartDate.Format("2006-01-02")
-	ed := reservation.EndDate.Format("2006-01-02")
-
-	stringMap["start_date"] = sd
-	stringMap["end_date"] = ed
-
 	render.Template(w, r, "reservation-summary.page.tmpl", &models.TemplateData{
-		Data:      data,
-		StringMap: stringMap,
+		Data: data,
 	})
 }
 
