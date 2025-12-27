@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"testing"
 
 	"booking-app/internal/models"
@@ -20,16 +19,15 @@ var theTests = []struct {
 	name               string
 	url                string
 	method             string
-	params             []postData
 	expectedStatusCode int
 }{
-	// {"home", "/", "GET", []postData{}, http.StatusOK},
-	// {"about", "/about", "GET", []postData{}, http.StatusOK},
-	// {"gq", "/generals-quarters", "GET", []postData{}, http.StatusOK},
-	// {"ms", "/majors-suite", "GET", []postData{}, http.StatusOK},
-	// {"sa", "/search-availability", "GET", []postData{}, http.StatusOK},
-	// {"make-reservation", "/make-reservation", "GET", []postData{}, http.StatusOK},
-	// {"contact", "/contact", "GET", []postData{}, http.StatusOK},
+	{"home", "/", "GET", http.StatusOK},
+	{"about", "/about", "GET", http.StatusOK},
+	{"gq", "/generals-quarters", "GET", http.StatusOK},
+	{"ms", "/majors-suite", "GET", http.StatusOK},
+	{"sa", "/search-availability", "GET", http.StatusOK},
+	{"make-reservation", "/make-reservation", "GET", http.StatusOK},
+	{"contact", "/contact", "GET", http.StatusOK},
 	// {"search-availability", "/search-availability", "POST", []postData{
 	// 	{
 	// 		value: "2025-02-01",
@@ -75,21 +73,23 @@ func TestHandlers(t *testing.T) {
 			if res.StatusCode != e.expectedStatusCode {
 				t.Errorf("for %s expected %d but got %d status code,\n", e.name, e.expectedStatusCode, res.StatusCode)
 			}
-		} else {
-			values := url.Values{}
-			for _, x := range e.params {
-				values.Add(x.key, x.value)
-			}
-
-			res, err := ts.Client().PostForm(ts.URL+e.url, values)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			if res.StatusCode != e.expectedStatusCode {
-				t.Errorf("for %s expected %d but got %d status code,\n", e.name, e.expectedStatusCode, res.StatusCode)
-			}
 		}
+
+		// else {
+		// 	values := url.Values{}
+		// 	for _, x := range e.params {
+		// 		values.Add(x.key, x.value)
+		// 	}
+		//
+		// 	res, err := ts.Client().PostForm(ts.URL+e.url, values)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+		//
+		// 	if res.StatusCode != e.expectedStatusCode {
+		// 		t.Errorf("for %s expected %d but got %d status code,\n", e.name, e.expectedStatusCode, res.StatusCode)
+		// 	}
+		// }
 	}
 }
 
