@@ -144,8 +144,11 @@ func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Requ
 	}
 
 	resp := JSONResponse{
-		Ok:      isAvailable,
-		Message: message,
+		Ok:        isAvailable,
+		Message:   message,
+		RoomID:    roomID,
+		StartDate: sd,
+		EndDate:   ed,
 	}
 
 	out, err := json.MarshalIndent(resp, "", "\n")
@@ -319,6 +322,9 @@ func (repo *Repository) ChooseRoom(w http.ResponseWriter, r *http.Request) {
 }
 
 type JSONResponse struct {
-	Ok      bool   `json:"ok"`
-	Message string `json:"message"`
+	Ok        bool   `json:"ok"`
+	Message   string `json:"message"`
+	RoomID    int    `json:"room_id",omitempty`
+	StartDate string `json:"start_date",omitempty`
+	EndDate   string `json:"end_date",omitempty`
 }

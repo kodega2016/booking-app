@@ -193,6 +193,8 @@
             const {
                 msg = "",
                 title = "",
+                icon="",
+                showConfirmButton = true,
             } = c;
 
             const { value: result } = await Swal.fire({
@@ -201,6 +203,8 @@
                 backdrop: false,
                 focusConfirm: false,
                 showCancelButton: true,
+                showConfirmButton: showConfirmButton,
+                icon: icon,
                 willOpen: () => {
                    if(c.willOpen!==undefined){
                     c.willOpen();

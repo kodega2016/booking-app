@@ -96,9 +96,17 @@
                 then(response => response.json()).
                 then(data=>{
                     if(data.ok){
-                        console.log("Room is available!");
+                        attention.custom({
+                            title:"Room Available!",
+                            msg:`Your room is available from ${data.start_date} to ${data.end_date}. <br>
+                            <a href="/book-room?start=${data.start_date}&end=${data.end_date}&room_id=${data.room_id}" class="btn btn-primary">Book Now</a>
+                            `,
+                        });
                     }else{
-                        console.log("No availability");
+                        attention.error({
+                            title:"No availability",
+                            msg:"The selected room is not available for the chosen dates. Please try again.",
+                        });
                     }
                 }).
                 catch(err=>{
