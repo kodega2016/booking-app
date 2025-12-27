@@ -294,8 +294,17 @@ func (repo *Repository) ReservationSummary(w http.ResponseWriter, r *http.Reques
 	repo.App.Session.Remove(r.Context(), "reservation")
 	data := make(map[string]any)
 	data["reservation"] = reservation
+
+	layout := "2006-01-02"
+	sd := reservation.StartDate.Format(layout)
+	ed := reservation.EndDate.Format(layout)
+	stringMap := map[string]string{}
+	stringMap["start_date"] = sd
+	stringMap["end_date"] = ed
+
 	render.Template(w, r, "reservation-summary.page.tmpl", &models.TemplateData{
-		Data: data,
+		Data:      data,
+		StringMap: stringMap,
 	})
 }
 
@@ -317,6 +326,45 @@ func (repo *Repository) ChooseRoom(w http.ResponseWriter, r *http.Request) {
 	data["reservation"] = res
 
 	// again put the reservation into the session
+	repo.App.Session.Put(r.Context(), "reservation", res)
+	http.Redirect(w, r, "/make-reservation", http.StatusSeeOther)
+}
+
+func (repo *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
+	ID, err := strconv.Atoi(r.URL.Query().Get("room_id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	sd := r.URL.Query().Get("start")
+	ed := r.URL.Query().Get("end")
+
+	layout := "2006-01-02"
+	startDate, err := time.Parse(layout, sd)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	endDate, err := time.Parse(layout, ed)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	var res models.Reservation
+	room, err := repo.DB.GetRoomByID(ID)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	res.Room.RoomName = room.RoomName
+	res.StartDate = startDate
+	res.EndDate = endDate
+	res.RoomID = ID
+
 	repo.App.Session.Put(r.Context(), "reservation", res)
 	http.Redirect(w, r, "/make-reservation", http.StatusSeeOther)
 }
