@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"testing"
 	"time"
 
 	"booking-app/internal/config"
@@ -27,7 +28,7 @@ var (
 	errorLog        *log.Logger
 )
 
-func getRoutes() http.Handler {
+func TestMain(m *testing.M) {
 	// change this to true when in production
 	app.InProduction = false
 
@@ -62,14 +63,17 @@ func getRoutes() http.Handler {
 
 	app.TemplateCache = tc
 	app.UseCache = true
-	repo := NewRepository(&app)
+	repo := NewTestRepository(&app)
 	NewHandler(repo)
 
 	render.NewRenderer(&app)
+	os.Exit(m.Run())
+}
+
+func getRoutes() http.Handler {
 
 	mux := chi.NewRouter()
 	mux.Use(SessionLoad)
-	//
 	// static file server
 	fs := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fs))
