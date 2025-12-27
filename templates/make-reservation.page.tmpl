@@ -1,90 +1,147 @@
 {{template "base" .}}
 
 {{define "content"}}
-<div class="container">
-    <div class="row">
-        <div class="col">
-            {{$res:=index .Data "reservation"}}
-            <h1 class="mt-3">Make Reservation</h1>
-            <p><strong>Reservation Details</strong></p>
-            <p>Room: {{$res.Room.RoomName}}</p>
-            <p>Arrival: {{index .StringMap "start_date"}}</p>
-            <p>Departure: {{index .StringMap "end_date"}}</p>
-            <form method="post" action="/make-reservation" class="needsi-validation" novalidate>
-                <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-                <input type="hidden" name="room_id" value="{{$res.RoomID}}"/>
-                <input type="hidden" name="start_date" value="{{index .StringMap "start_date"}}"/>
-                <input type="hidden" name="end_date" value="{{index .StringMap "end_date"}}"/>
-                <div class="form-group mt-3">
-                    <label for="first_name">First Name:</label>
-                    {{with .Form.Errors.Get "first_name"}}
-                      <label class="alert alert-danger">
-                          {{.}}
-                      </label>
-                    {{end}}
-                    <input class="form-control {{with .Form.Errors.Get "first_name"}} is-invalid {{end}}"
-                            id="first_name" autocomplete="off" type='text'
-                            name='first_name' value="{{$res.FirstName}}" required>
+{{$res:=index .Data "reservation"}}
+
+<!-- Page Header -->
+<section class="bg-primary text-white py-5">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8">
+        <h1 class="display-4 fw-bold mb-3">Complete Your Reservation</h1>
+        <p class="lead mb-0">Just a few more details to secure your stay</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Reservation Form -->
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <!-- Reservation Details Card -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-light border-0 py-3">
+            <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Reservation Details</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-door-open text-primary fs-4 me-3"></i>
+                  <div>
+                    <h6 class="mb-1">Room</h6>
+                    <p class="mb-0 text-muted">{{$res.Room.RoomName}}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-calendar-plus text-success fs-4 me-3"></i>
+                  <div>
+                    <h6 class="mb-1">Check-in</h6>
+                    <p class="mb-0 text-muted">{{index .StringMap "start_date"}}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-calendar-x text-danger fs-4 me-3"></i>
+                  <div>
+                    <h6 class="mb-1">Check-out</h6>
+                    <p class="mb-0 text-muted">{{index .StringMap "end_date"}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Guest Information Form -->
+        <div class="card border-0 shadow-lg">
+          <div class="card-header bg-primary text-white py-3">
+            <h5 class="mb-0"><i class="bi bi-person me-2"></i>Guest Information</h5>
+          </div>
+          <div class="card-body p-5">
+            <form method="post" action="/make-reservation" class="needs-validation" novalidate>
+              <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+              <input type="hidden" name="room_id" value="{{$res.RoomID}}"/>
+              <input type="hidden" name="start_date" value="{{index .StringMap "start_date"}}"/>
+              <input type="hidden" name="end_date" value="{{index .StringMap "end_date"}}"/>
+              
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="first_name" class="form-label fw-semibold">First Name</label>
+                  {{with .Form.Errors.Get "first_name"}}
+                    <div class="alert alert-danger py-2 mb-2">
+                      <i class="bi bi-exclamation-triangle me-2"></i>{{.}}
+                    </div>
+                  {{end}}
+                  <input class="form-control form-control-lg {{with .Form.Errors.Get "first_name"}} is-invalid {{end}}"
+                         id="first_name" autocomplete="given-name" type="text"
+                         name="first_name" value="{{$res.FirstName}}" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="last_name">Last Name:</label>
-                    {{with .Form.Errors.Get "last_name"}}
-                      <label class="alert alert-danger">
-                          {{.}}
-                      </label>
-                    {{end}}
-                    <input class="form-control {{with .Form.Errors.Get "last_name"}} is-invalid {{end}}"
-                            id="last_name" autocomplete="off" type='text'
-                            name='last_name' value="{{$res.LastName}}" required>
+                <div class="col-md-6">
+                  <label for="last_name" class="form-label fw-semibold">Last Name</label>
+                  {{with .Form.Errors.Get "last_name"}}
+                    <div class="alert alert-danger py-2 mb-2">
+                      <i class="bi bi-exclamation-triangle me-2"></i>{{.}}
+                    </div>
+                  {{end}}
+                  <input class="form-control form-control-lg {{with .Form.Errors.Get "last_name"}} is-invalid {{end}}"
+                         id="last_name" autocomplete="family-name" type="text"
+                         name="last_name" value="{{$res.LastName}}" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    {{with .Form.Errors.Get "email"}}
-                      <label class="alert alert-danger">
-                          {{.}}
-                      </label>
-                    {{end}}
-                    <input class="form-control {{with .Form.Errors.Get "email"}} is-invalid {{end}}" id="email"
-                            autocomplete="off" type='email'
-                            name='email' value="{{$res.Email}}" required>
+                <div class="col-md-6">
+                  <label for="email" class="form-label fw-semibold">Email Address</label>
+                  {{with .Form.Errors.Get "email"}}
+                    <div class="alert alert-danger py-2 mb-2">
+                      <i class="bi bi-exclamation-triangle me-2"></i>{{.}}
+                    </div>
+                  {{end}}
+                  <input class="form-control form-control-lg {{with .Form.Errors.Get "email"}} is-invalid {{end}}" 
+                         id="email" autocomplete="email" type="email"
+                         name="email" value="{{$res.Email}}" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="phone">Phone:</label>
-                    {{with .Form.Errors.Get "phone"}}
-                      <label class="alert alert-danger">
-                          {{.}}
-                      </label>
-                    {{end}}
-                    <input class="form-control {{with .Form.Errors.Get "phone"}} is-invalid {{end}}" id="phone"
-                            autocomplete="off" type='email'
-                            name='phone' value="{{$res.Phone}}" required>
+                <div class="col-md-6">
+                  <label for="phone" class="form-label fw-semibold">Phone Number</label>
+                  {{with .Form.Errors.Get "phone"}}
+                    <div class="alert alert-danger py-2 mb-2">
+                      <i class="bi bi-exclamation-triangle me-2"></i>{{.}}
+                    </div>
+                  {{end}}
+                  <input class="form-control form-control-lg {{with .Form.Errors.Get "phone"}} is-invalid {{end}}" 
+                         id="phone" autocomplete="tel" type="tel"
+                         name="phone" value="{{$res.Phone}}" required>
                 </div>
-                <hr>
-                <input type="submit" class="btn btn-primary" value="Make Reservation">
+
+                <div class="col-12">
+                  <div class="form-check py-3">
+                    <input class="form-check-input" type="checkbox" id="terms" required>
+                    <label class="form-check-label" for="terms">
+                      I agree to the <a href="#" class="text-decoration-none">Terms & Conditions</a> 
+                      and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="d-grid gap-2 mt-3">
+                    <button type="submit" class="btn btn-success btn-lg py-3">
+                      <i class="bi bi-check-circle me-2"></i>Confirm Reservation
+                    </button>
+                  </div>
+                </div>
+              </div>
             </form>
-
-        
+          </div>
         </div>
+      </div>
     </div>
-</div>
-<footer class="my-footer">
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                left
-            </div>
-
-            <div class="col">
-                center
-            </div>
-
-            <div class="col">
-                right
-            </div>
-        </div>
-    </div>
-</footer>
+  </div>
+</section>
 {{end}}

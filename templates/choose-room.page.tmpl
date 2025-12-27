@@ -1,20 +1,132 @@
 {{template "base" .}}
 
 {{define "content"}}
-
 {{$rooms:=index .Data "rooms"}}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col">
-            <h3>Choose Your Room</h3>
-            {{range $rooms}}
-                <div>
-                    <h3><a href="/choose-room/{{.ID}}">{{.RoomName}}</a></h3>
-                </div>
-            {{end}}
-    
-        </div>
-    </div>
 
-</div>
+<!-- Page Header -->
+<section class="bg-primary text-white py-5">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8">
+        <h1 class="display-4 fw-bold mb-3">Choose Your Room</h1>
+        <p class="lead mb-0">Select from our available accommodations for your dates</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Available Rooms -->
+<section class="py-5">
+  <div class="container">
+    {{if $rooms}}
+      <div class="row g-4">
+        {{range $rooms}}
+          <div class="col-lg-6">
+            <div class="card border-0 shadow-lg h-100">
+              <div class="row g-0 h-100">
+                <div class="col-md-5">
+                  {{if eq .RoomName "General's Quarters"}}
+                    <img src="static/images/generals-quarters.png" 
+                         class="img-fluid rounded-start h-100" 
+                         style="object-fit: cover;" 
+                         alt="{{.RoomName}}">
+                  {{else if eq .RoomName "Major's Suite"}}
+                    <img src="static/images/marjors-suite.png" 
+                         class="img-fluid rounded-start h-100" 
+                         style="object-fit: cover;" 
+                         alt="{{.RoomName}}">
+                  {{else}}
+                    <div class="bg-light rounded-start h-100 d-flex align-items-center justify-content-center">
+                      <i class="bi bi-house display-1 text-muted"></i>
+                    </div>
+                  {{end}}
+                </div>
+                <div class="col-md-7">
+                  <div class="card-body d-flex flex-column h-100 p-4">
+                    <div class="flex-grow-1">
+                      <h4 class="card-title mb-3">{{.RoomName}}</h4>
+                      
+                      {{if eq .RoomName "General's Quarters"}}
+                        <p class="card-text text-muted mb-3">
+                          Our premier oceanfront suite with panoramic Atlantic views, 
+                          private balcony, and luxury amenities.
+                        </p>
+                        <div class="mb-3">
+                          <small class="text-muted">
+                            <i class="bi bi-people me-2"></i>Sleeps 2-4
+                            <i class="bi bi-rulers ms-3 me-2"></i>650 sq ft
+                          </small>
+                        </div>
+                        <div class="mb-3">
+                          <span class="badge bg-primary me-2">Ocean View</span>
+                          <span class="badge bg-success me-2">Balcony</span>
+                          <span class="badge bg-info">Premium</span>
+                        </div>
+                      {{else if eq .RoomName "Major's Suite"}}
+                        <p class="card-text text-muted mb-3">
+                          Intimate and romantic suite perfect for couples, featuring 
+                          a fireplace, garden views, and vintage charm.
+                        </p>
+                        <div class="mb-3">
+                          <small class="text-muted">
+                            <i class="bi bi-heart me-2"></i>Sleeps 2
+                            <i class="bi bi-rulers ms-3 me-2"></i>450 sq ft
+                          </small>
+                        </div>
+                        <div class="mb-3">
+                          <span class="badge bg-success me-2">Garden View</span>
+                          <span class="badge bg-danger me-2">Fireplace</span>
+                          <span class="badge bg-warning">Romantic</span>
+                        </div>
+                      {{else}}
+                        <p class="card-text text-muted mb-3">
+                          Comfortable accommodation with modern amenities and 
+                          thoughtful touches for a pleasant stay.
+                        </p>
+                        <div class="mb-3">
+                          <span class="badge bg-primary">Available</span>
+                        </div>
+                      {{end}}
+                    </div>
+                    
+                    <div class="mt-auto">
+                      <a href="/choose-room/{{.ID}}" 
+                         class="btn btn-primary d-grid">
+                        <i class="bi bi-check-circle me-2"></i>Select This Room
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {{end}}
+      </div>
+    {{else}}
+      <!-- No Rooms Available -->
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body text-center p-5">
+              <i class="bi bi-calendar-x display-1 text-muted mb-4"></i>
+              <h3 class="mb-3">No Rooms Available</h3>
+              <p class="text-muted mb-4">
+                Unfortunately, we don't have any rooms available for your selected dates. 
+                Please try different dates or contact us directly.
+              </p>
+              <div class="d-flex gap-3 justify-content-center">
+                <a href="/search-availability" class="btn btn-primary px-4">
+                  <i class="bi bi-arrow-left me-2"></i>Try Different Dates
+                </a>
+                <a href="/contact" class="btn btn-outline-primary px-4">
+                  <i class="bi bi-telephone me-2"></i>Contact Us
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{end}}
+  </div>
+</section>
 {{end}}

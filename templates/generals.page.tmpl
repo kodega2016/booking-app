@@ -1,61 +1,125 @@
 {{template "base" .}}
 
 {{define "content"}}
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <img src="static/images/generals-quarters.png"
-                    class="img-fluid img-thumbnail mx-auto d-block room-image" alt="room image">
-        </div>
+<!-- Page Header -->
+<section class="bg-primary text-white py-5">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8">
+        <h1 class="display-4 fw-bold mb-3">General's Quarters</h1>
+        <p class="lead mb-0">Elegance and comfort in our signature oceanview suite</p>
+      </div>
     </div>
+  </div>
+</section>
 
-
-    <div class="row">
-        <div class="col">
-            <h1 class="text-center mt-4">General's Quarters</h1>
-            <p>
-                Your home away form home, set on the majestic waters of the Atlantic Ocean, this will be a vacation
-                to remember.
-                Your home away form home, set on the majestic waters of the Atlantic Ocean, this will be a vacation
-                to remember.
-                Your home away form home, set on the majestic waters of the Atlantic Ocean, this will be a vacation
-                to remember.
-                Your home away form home, set on the majestic waters of the Atlantic Ocean, this will be a vacation
-                to remember.
-                Your home away form home, set on the majestic waters of the Atlantic Ocean, this will be a vacation
-                to remember.
-                Your home away form home, set on the majestic waters of the Atlantic Ocean, this will be a vacation
-                to remember.
-            </p>
+<!-- Room Details -->
+<section class="py-5">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6">
+        <div class="position-relative">
+          <img src="static/images/generals-quarters.png" 
+               class="img-fluid rounded-3 shadow-lg" 
+               alt="General's Quarters - Elegant oceanview suite">
+          <div class="position-absolute top-0 end-0 m-3">
+            <span class="badge bg-primary fs-6 px-3 py-2">Premium Suite</span>
+          </div>
         </div>
-    </div>
-
-
-    <div class="row">
-        <div class="col text-center">
-            <a id="check-availability-button" href="#" class="btn btn-success">Check Availability</a>
-        </div>
-    </div>
-</div>
-
-<footer class="my-footer">
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                left
+      </div>
+      <div class="col-lg-6">
+        <h2 class="mb-4">Luxury Oceanfront Experience</h2>
+        <p class="lead mb-4">
+          Named after General William Smythe himself, this premier suite offers 
+          unparalleled luxury with panoramic Atlantic Ocean views.
+        </p>
+        <div class="row g-3 mb-4">
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-people text-primary fs-4 me-3"></i>
+              <div>
+                <h6 class="mb-1">Sleeps 2-4</h6>
+                <small class="text-muted">King bed + sofa bed</small>
+              </div>
             </div>
-
-            <div class="col">
-                center
+          </div>
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-rulers text-primary fs-4 me-3"></i>
+              <div>
+                <h6 class="mb-1">650 sq ft</h6>
+                <small class="text-muted">Spacious layout</small>
+              </div>
             </div>
-
-            <div class="col">
-                right
+          </div>
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-water text-primary fs-4 me-3"></i>
+              <div>
+                <h6 class="mb-1">Ocean View</h6>
+                <small class="text-muted">Panoramic windows</small>
+              </div>
             </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-door-open text-primary fs-4 me-3"></i>
+              <div>
+                <h6 class="mb-1">Private Balcony</h6>
+                <small class="text-muted">Furnished terrace</small>
+              </div>
+            </div>
+          </div>
         </div>
+        <a id="check-availability-button" href="#" class="btn btn-success btn-lg px-4 py-3">
+          <i class="bi bi-calendar-check me-2"></i>Check Availability
+        </a>
+      </div>
     </div>
-</footer>
+  </div>
+</section>
 
+<!-- Amenities Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row text-center mb-5">
+      <div class="col-lg-8 mx-auto">
+        <h2 class="display-6 mb-4">Suite Amenities</h2>
+        <p class="lead text-muted">Every detail designed for your comfort and enjoyment</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-3 col-sm-6">
+        <div class="text-center">
+          <i class="bi bi-wifi display-6 text-primary mb-3"></i>
+          <h5>High-Speed WiFi</h5>
+          <p class="text-muted mb-0">Complimentary internet</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="text-center">
+          <i class="bi bi-cup-hot display-6 text-primary mb-3"></i>
+          <h5>Coffee Station</h5>
+          <p class="text-muted mb-0">Premium coffee & tea</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="text-center">
+          <i class="bi bi-droplet display-6 text-primary mb-3"></i>
+          <h5>Spa Bathroom</h5>
+          <p class="text-muted mb-0">Marble & rainfall shower</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="text-center">
+          <i class="bi bi-tv display-6 text-primary mb-3"></i>
+          <h5>Smart TV</h5>
+          <p class="text-muted mb-0">65" with streaming</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 {{end}}
 
 
