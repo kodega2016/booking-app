@@ -324,7 +324,7 @@ func (repo *Repository) ChooseRoom(w http.ResponseWriter, r *http.Request) {
 type JSONResponse struct {
 	Ok        bool   `json:"ok"`
 	Message   string `json:"message"`
-	RoomID    int    `json:"room_id",omitempty`
-	StartDate string `json:"start_date",omitempty`
-	EndDate   string `json:"end_date",omitempty`
+	RoomID    int    `json:"room_id"`
+	StartDate string `json:"start_date"`
+	EndDate   string `json:"end_date"`
 }
