@@ -75,6 +75,49 @@
         attention.custom({
             title: 'Choose your dates',
             msg: html,
+            callback:function(result){
+                let form=document.getElementById("check-availability-form");
+                let formData=new FormData(form);
+                formData.append("csrf_token", "{{.CSRFToken}}");
+                formData.append("room_id","2");
+
+
+                fetch('/search-availability-json',{
+                    method:"POST",
+                    body:formData
+                }).
+                then(response => response.json()).
+                then(data=>{
+                    if(data.ok){
+                        attention.custom({
+                            title:"Room Available!",
+                            msg:`Your room is available from ${data.start_date} to ${data.end_date}. <br>
+                            <a href="/book-room?start=${data.start_date}&end=${data.end_date}&room_id=${data.room_id}" class="btn btn-primary">Book Now</a>
+                            `,
+                        });
+                    }else{
+                        attention.error({
+                            title:"No availability",
+                            msg:"The selected room is not available for the chosen dates. Please try again.",
+                        });
+                    }
+                }).
+                catch(err=>{
+                    console.log(err);
+                });
+            },
+            willOpen: () => {
+                    const elem = document.getElementById("reservation-dates-modal");
+                    const rp = new DateRangePicker(elem, {
+                        format: 'yyyy-mm-dd',
+                        showOnFocus: true,
+                        minDate: new Date(),
+                    })
+                },
+                didOpen: () => {
+                    document.getElementById("start").removeAttribute("disabled");
+                    document.getElementById("end").removeAttribute("disabled");
+                },
         });
     })
 </script>
