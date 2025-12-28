@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/smtp"
 	"os"
 	"time"
 
@@ -36,6 +37,21 @@ func main() {
 
 	// close the database connection
 	defer db.SQL.Close()
+
+	from := "info@example.com"
+	auth := smtp.PlainAuth("", "", "", "localhost")
+	toEmails := []string{
+		"khadgalovecoding2016@gmail.com",
+		"nishuka@gmail.com",
+	}
+	msg := "Hello,this is a demo"
+	err = smtp.SendMail("localhost:1025", auth, from, toEmails, []byte(msg))
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println("sent email successfully.")
+
 	// starting the server
 	fmt.Printf("server is running on port %d\n", port)
 	srv := &http.Server{
