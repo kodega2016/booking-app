@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"booking-app/internal/models"
@@ -74,22 +76,6 @@ func TestHandlers(t *testing.T) {
 				t.Errorf("for %s expected %d but got %d status code,\n", e.name, e.expectedStatusCode, res.StatusCode)
 			}
 		}
-
-		// else {
-		// 	values := url.Values{}
-		// 	for _, x := range e.params {
-		// 		values.Add(x.key, x.value)
-		// 	}
-		//
-		// 	res, err := ts.Client().PostForm(ts.URL+e.url, values)
-		// 	if err != nil {
-		// 		log.Fatal(err)
-		// 	}
-		//
-		// 	if res.StatusCode != e.expectedStatusCode {
-		// 		t.Errorf("for %s expected %d but got %d status code,\n", e.name, e.expectedStatusCode, res.StatusCode)
-		// 	}
-		// }
 	}
 }
 
@@ -146,6 +132,29 @@ func TestRepository_Reservation(t *testing.T) {
 
 	if w.Code != http.StatusTemporaryRedirect {
 		t.Errorf("Reservation handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusOK)
+	}
+}
+
+func TestRepository_PostReservation(t *testing.T) {
+	reqBody := "start_date=2050-01-02"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end_date=2050-01-02")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "first_name=Nishuka")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=Shrestha")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=9812345678")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "email=example@example.com")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
+
+	req, _ := http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	ctx := getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	w := httptest.NewRecorder()
+	handler := http.HandlerFunc(Repo.PostReservation)
+	handler.ServeHTTP(w, req)
+
+	if w.Code != http.StatusSeeOther {
+		t.Errorf("PostReservation handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusTemporaryRedirect)
 	}
 }
 
