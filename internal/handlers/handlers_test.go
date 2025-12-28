@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 
@@ -144,7 +145,16 @@ func TestRepository_PostReservation(t *testing.T) {
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "email=example@example.com")
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
 
-	req, _ := http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	postedData := url.Values{}
+	postedData.Add("start_date", "2050-01-02")
+	postedData.Add("end_date", "2050-01-02")
+	postedData.Add("first_name", "Nishuka")
+	postedData.Add("last_name", "Shrestha")
+	postedData.Add("phone", "9812345678")
+	postedData.Add("email", "example@example.com")
+	postedData.Add("room_id", "1")
+
+	req, _ := http.NewRequest("POST", "/make-reservation", strings.NewReader(postedData.Encode()))
 	ctx := getCtx(req)
 	req = req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
