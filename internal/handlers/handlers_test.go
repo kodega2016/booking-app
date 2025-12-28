@@ -271,6 +271,92 @@ func TestRepository_PostReservation(t *testing.T) {
 	}
 }
 
+func TestRepository_PostAvailabilityJSON(t *testing.T) {
+	reqBody := "start=2050-01-02"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=2050-01-02")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
+
+	req, _ := http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+	ctx := getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	w := httptest.NewRecorder()
+	handler := http.HandlerFunc(Repo.PostAvailabilityJSON)
+	handler.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("PostAvailabilityJSON handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusOK)
+	}
+
+	// test for invalid body
+	reqBody = "start=invalid"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=2050-01-02")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
+
+	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w = httptest.NewRecorder()
+	handler = http.HandlerFunc(Repo.PostAvailabilityJSON)
+	handler.ServeHTTP(w, req)
+
+	if w.Code != http.StatusTemporaryRedirect {
+		t.Errorf("PostAvailabilityJSON handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusOK)
+	}
+
+	// test for invalid room id
+	reqBody = "start=2050-01-02"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=2050-01-02")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=invalid")
+
+	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w = httptest.NewRecorder()
+	handler = http.HandlerFunc(Repo.PostAvailabilityJSON)
+	handler.ServeHTTP(w, req)
+	if w.Code != http.StatusTemporaryRedirect {
+		t.Errorf("PostAvailabilityJSON handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusOK)
+	}
+
+	// test for room id that causes db error
+	reqBody = "start=2050-01-02"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=2050-01-02")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=2")
+
+	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w = httptest.NewRecorder()
+	handler = http.HandlerFunc(Repo.PostAvailabilityJSON)
+	handler.ServeHTTP(w, req)
+	if w.Code == http.StatusTemporaryRedirect {
+		t.Errorf("PostAvailabilityJSON handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusOK)
+	}
+
+	// test for no availability
+	reqBody = "start=2050-01-02"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=2050-01-02")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1000")
+
+	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w = httptest.NewRecorder()
+	handler = http.HandlerFunc(Repo.PostAvailabilityJSON)
+	handler.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("PostAvailabilityJSON handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusOK)
+	}
+
+}
+
 func getCtx(req *http.Request) context.Context {
 	ctx, err := session.Load(req.Context(), req.Header.Get("X-Session"))
 	if err != nil {

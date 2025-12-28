@@ -117,31 +117,48 @@ func (repo *Repository) PostAvailability(w http.ResponseWriter, r *http.Request)
 }
 
 func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Request) {
+
+	err := r.ParseForm()
+	if err != nil {
+		resp := JSONResponse{
+			Ok:      false,
+			Message: "Internal server error",
+		}
+		out, _ := json.MarshalIndent(resp, "", "\n")
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(out)
+		return
+	}
+
 	sd := r.Form.Get("start")
 	ed := r.Form.Get("end")
 	layout := "2006-01-02"
 
 	startDate, err := time.Parse(layout, sd)
 	if err != nil {
-		helpers.ServerError(w, err)
+		repo.App.Session.Put(r.Context(), "error", "failed to parse the start date")
+		http.Redirect(w, r, "/search-availability", http.StatusTemporaryRedirect)
 		return
 	}
 
 	endDate, err := time.Parse(layout, ed)
 	if err != nil {
-		helpers.ServerError(w, err)
+		repo.App.Session.Put(r.Context(), "error", "failed to parse the end date")
+		http.Redirect(w, r, "/search-availability", http.StatusTemporaryRedirect)
 		return
 	}
 
 	roomID, err := strconv.Atoi(r.Form.Get("room_id"))
 	if err != nil {
-		helpers.ServerError(w, err)
+		repo.App.Session.Put(r.Context(), "error", "failed to parse the room id")
+		http.Redirect(w, r, "/search-availability", http.StatusTemporaryRedirect)
 		return
 	}
 
 	isAvailable, err := repo.DB.SearchAvailabilityByDatesByRoomID(startDate, endDate, roomID)
 	if err != nil {
-		helpers.ServerError(w, err)
+		repo.App.Session.Put(r.Context(), "error", "failed to search availability")
+		http.Redirect(w, r, "/search-availability", http.StatusTemporaryRedirect)
 		return
 	}
 
