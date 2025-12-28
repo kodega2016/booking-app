@@ -156,6 +156,119 @@ func TestRepository_PostReservation(t *testing.T) {
 	if w.Code != http.StatusSeeOther {
 		t.Errorf("PostReservation handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusTemporaryRedirect)
 	}
+
+	// test for invalid body
+	reqBody = ""
+	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	w = httptest.NewRecorder()
+	handler = http.HandlerFunc(Repo.PostReservation)
+	handler.ServeHTTP(w, req)
+
+	if w.Code != http.StatusTemporaryRedirect {
+		t.Errorf("PostReservation handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusTemporaryRedirect)
+	}
+
+	// test for invalid start date
+	reqBody = "start_date=invalid"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end_date=2050-01-02")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "first_name=Nishuka")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=Shrestha")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=9812345678")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
+
+	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	w = httptest.NewRecorder()
+	handler = http.HandlerFunc(Repo.PostReservation)
+	handler.ServeHTTP(w, req)
+	if w.Code != http.StatusTemporaryRedirect {
+		t.Errorf("PostReservation handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusTemporaryRedirect)
+	}
+
+	// test for invalid end date
+	reqBody = "start_date=invalid"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "start_date=2050-01-02")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end_date=invalid")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "first_name=Nishuka")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=Shrestha")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=9812345678")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
+
+	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	w = httptest.NewRecorder()
+	handler = http.HandlerFunc(Repo.PostReservation)
+	handler.ServeHTTP(w, req)
+	if w.Code != http.StatusTemporaryRedirect {
+		t.Errorf("PostReservation handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusTemporaryRedirect)
+	}
+
+	// test for invalid room id
+	reqBody = "start_date=2050-01-02"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end_date=2050-01-03")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "first_name=Nishuka")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=Shrestha")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=9812345678")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=invalid")
+	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	w = httptest.NewRecorder()
+	handler = http.HandlerFunc(Repo.PostReservation)
+	handler.ServeHTTP(w, req)
+	if w.Code != http.StatusTemporaryRedirect {
+		t.Errorf("PostReservation handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusTemporaryRedirect)
+	}
+
+	// test for invalid room id that causes db error
+	reqBody = "start_date=2050-01-02"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end_date=2050-01-03")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "first_name=Nishuka")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=Shrestha")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=9812345678")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=2")
+	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	w = httptest.NewRecorder()
+	handler = http.HandlerFunc(Repo.PostReservation)
+	handler.ServeHTTP(w, req)
+	if w.Code == http.StatusTemporaryRedirect {
+		t.Errorf("PostReservation handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusTemporaryRedirect)
+	}
+
+	// test for invalid reservation restriction that causes db error
+	reqBody = "start_date=2050-01-02"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end_date=2050-01-03")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "first_name=Nishuka")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=Shrestha")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=9812345678")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1000")
+	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	w = httptest.NewRecorder()
+	handler = http.HandlerFunc(Repo.PostReservation)
+	handler.ServeHTTP(w, req)
+	if w.Code == http.StatusTemporaryRedirect {
+		t.Errorf("PostReservation handler returned wrong status code expected %d but got %d.\n", w.Code, http.StatusTemporaryRedirect)
+	}
 }
 
 func getCtx(req *http.Request) context.Context {
