@@ -9,6 +9,7 @@ require (
 	github.com/go-chi/chi/v5 v5.2.3
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/justinas/nosurf v1.2.0
+	github.com/xhit/go-simple-mail v2.2.2+incompatible
 )
 
 require (

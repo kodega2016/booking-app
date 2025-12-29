@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/smtp"
 	"os"
 	"time"
 
@@ -38,19 +37,20 @@ func main() {
 	// close the database connection
 	defer db.SQL.Close()
 
-	from := "info@example.com"
-	auth := smtp.PlainAuth("", "", "", "localhost")
-	toEmails := []string{
-		"khadgalovecoding2016@gmail.com",
-		"nishuka@gmail.com",
-	}
-	msg := "Hello,this is a demo"
-	err = smtp.SendMail("localhost:1025", auth, from, toEmails, []byte(msg))
-	if err != nil {
-		log.Println(err)
+	// close the mail data channel
+	defer close(app.MailChan)
+
+	// listen for email
+	listenForMail()
+
+	msg := models.MailData{
+		To:      "nishuka@gmail.com",
+		From:    "example@example.com",
+		Subject: "Just a reminder...:)",
+		Content: "I am just missing you baby....",
 	}
 
-	fmt.Println("sent email successfully.")
+	app.MailChan <- msg
 
 	// starting the server
 	fmt.Printf("server is running on port %d\n", port)
@@ -75,6 +75,10 @@ func run() (*driver.DB, error) {
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
 	gob.Register(models.RoomRestriction{})
+
+	// make channel for mail data
+	mailChan := make(chan models.MailData)
+	app.MailChan = mailChan
 
 	// setting up session manager
 	session = scs.New()
