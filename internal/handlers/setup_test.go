@@ -28,6 +28,14 @@ var (
 	errorLog        *log.Logger
 )
 
+func listenForMail() {
+	go func() {
+		for {
+			<-app.MailChan
+		}
+	}()
+}
+
 func TestMain(m *testing.M) {
 	// change this to true when in production
 	app.InProduction = false
@@ -38,6 +46,12 @@ func TestMain(m *testing.M) {
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
 	gob.Register(models.RoomRestriction{})
+
+	mailChan := make(chan models.MailData)
+	app.MailChan = mailChan
+	defer close(mailChan)
+
+	listenForMail()
 
 	// setting up session manager
 	session = scs.New()
@@ -71,7 +85,6 @@ func TestMain(m *testing.M) {
 }
 
 func getRoutes() http.Handler {
-
 	mux := chi.NewRouter()
 	mux.Use(SessionLoad)
 	// static file server

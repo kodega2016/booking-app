@@ -315,10 +315,11 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 			`, sd, ed)
 
 		msg = models.MailData{
-			To:      "owner@example.com",
-			From:    "example@example.com",
-			Subject: "Reservation Notification",
-			Content: htmlMessage,
+			To:       "owner@example.com",
+			From:     "example@example.com",
+			Subject:  "Reservation Notification",
+			Content:  htmlMessage,
+			Template: "basic.html",
 		}
 
 		repo.App.MailChan <- msg
