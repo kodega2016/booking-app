@@ -17,6 +17,7 @@ import (
 	"booking-app/internal/render"
 	"booking-app/internal/repository"
 	"booking-app/internal/repository/dbrepo"
+	"booking-app/internal/utils"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -120,7 +121,7 @@ func (repo *Repository) PostAvailability(w http.ResponseWriter, r *http.Request)
 func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		resp := JSONResponse{
+		resp := utils.JSONResponse{
 			Ok:      false,
 			Message: "Internal server error",
 		}
@@ -169,7 +170,7 @@ func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Requ
 		message = "Unavailable"
 	}
 
-	resp := JSONResponse{
+	resp := utils.JSONResponse{
 		Ok:        isAvailable,
 		Message:   message,
 		RoomID:    roomID,
@@ -433,12 +434,4 @@ func (repo *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
 
 	repo.App.Session.Put(r.Context(), "reservation", res)
 	http.Redirect(w, r, "/make-reservation", http.StatusSeeOther)
-}
-
-type JSONResponse struct {
-	Ok        bool   `json:"ok"`
-	Message   string `json:"message"`
-	RoomID    int    `json:"room_id"`
-	StartDate string `json:"start_date"`
-	EndDate   string `json:"end_date"`
 }
