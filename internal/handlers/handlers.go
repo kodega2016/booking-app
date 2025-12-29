@@ -3,6 +3,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -117,7 +118,6 @@ func (repo *Repository) PostAvailability(w http.ResponseWriter, r *http.Request)
 }
 
 func (repo *Repository) PostAvailabilityJSON(w http.ResponseWriter, r *http.Request) {
-
 	err := r.ParseForm()
 	if err != nil {
 		resp := JSONResponse{
@@ -223,7 +223,6 @@ func (repo *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 }
 
 func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
-
 	err := r.ParseForm()
 	if err != nil {
 		repo.App.Session.Put(r.Context(), "error", "cannot parse the form")
@@ -292,6 +291,37 @@ func (repo *Repository) PostReservation(w http.ResponseWriter, r *http.Request) 
 			RoomID:        roomID,
 			RestrictionID: 1,
 		}
+
+		// send email notificaions to guest
+		htmlMessage := fmt.Sprintf(`
+			<strong>Reservation Confirmation</strong><br>
+			Dear %s:<br>
+			This is confirmation from %s to %s
+			`, res.FirstName, sd, ed)
+
+		msg := models.MailData{
+			To:      res.Email,
+			From:    "example@example.com",
+			Subject: "Reservation Confirmation",
+			Content: htmlMessage,
+		}
+
+		repo.App.MailChan <- msg
+
+		// send email to property owner
+		htmlMessage = fmt.Sprintf(`
+			<strong>Reservation Notification</strong><br>
+			A reservation has been made for from %s to %s
+			`, sd, ed)
+
+		msg = models.MailData{
+			To:      "owner@example.com",
+			From:    "example@example.com",
+			Subject: "Reservation Notification",
+			Content: htmlMessage,
+		}
+
+		repo.App.MailChan <- msg
 
 		_, err = repo.DB.InsertRoomRestriction(restriction)
 		if err != nil {
