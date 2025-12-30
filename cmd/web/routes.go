@@ -35,5 +35,6 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/choose-room/{id}", handlers.Repo.ChooseRoom)
 	mux.Get("/book-room", handlers.Repo.BookRoom)
 	mux.Get("/contact", handlers.Repo.Contact)
+	mux.Get("/auth/login", handlers.Repo.ShowLogin)
 	return mux
 }

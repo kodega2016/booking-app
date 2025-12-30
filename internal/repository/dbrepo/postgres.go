@@ -3,6 +3,7 @@ package dbrepo
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"booking-app/internal/models"
@@ -111,4 +112,49 @@ func (m *postgresDBRepo) GetRoomByID(id int) (models.Room, error) {
 	}
 
 	return room, nil
+}
+
+func (m *postgresDBRepo) GetUserByID(id int) (models.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+
+	var user models.User
+	query := `select id,first_name,last_name,email,access_level,created_at,updated_at from users where id=$1`
+	row := m.DB.QueryRowContext(ctx, query, id)
+
+	err := row.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.AccessLevel, &user.CreatedAt, &user.UpdatedAt)
+	if err != nil {
+		return models.User{}, err
+	}
+	return user, nil
+}
+
+func (m *postgresDBRepo) UpdateUser(user models.User) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+
+	query := `
+	update users set first_name=$1,last_name=$2,email=$3,access_level=$4,updated_at=$5
+	where id=$6
+	`
+
+	res, err := m.DB.ExecContext(ctx, query, user.FirstName, user.LastName, user.Email, user.AccessLevel, user.UpdatedAt, user.ID)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return errors.New("no user updated")
+	}
+
+	return nil
+}
+
+func (m *postgresDBRepo) Authenticate(email, password string) (int, error) {
+	return 0, nil
 }
