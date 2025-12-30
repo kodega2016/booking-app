@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"booking-app/internal/models"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // AllUsers implements [repository.DatabaseRepo].
@@ -155,6 +157,25 @@ func (m *postgresDBRepo) UpdateUser(user models.User) error {
 	return nil
 }
 
-func (m *postgresDBRepo) Authenticate(email, password string) (int, error) {
-	return 0, nil
+func (m *postgresDBRepo) Authenticate(email, password string) (int, string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+
+	var id int
+	var hashedPassword string
+
+	row := m.DB.QueryRowContext(ctx, "select id,password from users where email=$1", email)
+	err := row.Scan(&id, &hashedPassword)
+	if err != nil {
+		return id, "", err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	if err == bcrypt.ErrMismatchedHashAndPassword {
+		return 0, "", errors.New("password does not matched")
+	} else if err != nil {
+		return 0, "", err
+	} else {
+		return id, hashedPassword, nil
+	}
 }

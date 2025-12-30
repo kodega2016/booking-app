@@ -53,3 +53,8 @@ func (m *testDBRepo) GetUserByID(id int) (models.User, error) {
 func (m *testDBRepo) UpdateUser(user models.User) error {
 	return nil
 }
+
+// Authenticate implements [repository.DatabaseRepo].
+func (m *testDBRepo) Authenticate(email string, password string) (int, string, error) {
+	panic("unimplemented")
+}
