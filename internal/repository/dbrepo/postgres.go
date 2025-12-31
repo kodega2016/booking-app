@@ -3,6 +3,7 @@ package dbrepo
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"time"
 
@@ -165,8 +166,12 @@ func (m *postgresDBRepo) Authenticate(email, password string) (int, string, erro
 	var hashedPassword string
 
 	row := m.DB.QueryRowContext(ctx, "select id,password from users where email=$1", email)
+
 	err := row.Scan(&id, &hashedPassword)
-	if err != nil {
+
+	if err == sql.ErrNoRows {
+		return 0, "", errors.New("user not found")
+	} else if err != nil {
 		return id, "", err
 	}
 

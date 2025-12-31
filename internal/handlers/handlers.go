@@ -441,3 +441,37 @@ func (repo *Repository) ShowLogin(w http.ResponseWriter, r *http.Request) {
 		Form: forms.New(nil),
 	})
 }
+
+func (repo *Repository) PostShowLogin(w http.ResponseWriter, r *http.Request) {
+	err := repo.App.Session.RenewToken(r.Context())
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = r.ParseForm()
+	if err != nil {
+		log.Println(err)
+	}
+
+	form := forms.New(r.Form)
+	form.Required("email", "password")
+
+	email := form.Get("email")
+	password := form.Get("password")
+
+	if !form.Valid() {
+		render.Template(w, r, "login.page.tmpl", &models.TemplateData{
+			Form: form,
+		})
+	}
+
+	id, _, err := repo.DB.Authenticate(email, password)
+	if err != nil {
+		repo.App.Session.Put(r.Context(), "error", "invalid login credentials")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+	repo.App.Session.Put(r.Context(), "user_id", id)
+	repo.App.Session.Put(r.Context(), "flash", "Logged in successfully.")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
