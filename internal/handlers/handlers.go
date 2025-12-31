@@ -475,3 +475,16 @@ func (repo *Repository) PostShowLogin(w http.ResponseWriter, r *http.Request) {
 	repo.App.Session.Put(r.Context(), "flash", "Logged in successfully.")
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
+
+func (repo *Repository) Logout(w http.ResponseWriter, r *http.Request) {
+	err := repo.App.Session.Destroy(r.Context())
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = repo.App.Session.RenewToken(r.Context())
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}

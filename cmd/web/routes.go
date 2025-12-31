@@ -14,7 +14,7 @@ func routes(app *config.AppConfig) http.Handler {
 	mux := chi.NewRouter()
 	// use middleware
 	mux.Use(middleware.Recoverer)
-	mux.Use(WriteToConsole)
+	// mux.Use(WriteToConsole)
 	mux.Use(NoSurf)
 	mux.Use(SessionLoad)
 
@@ -37,5 +37,6 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/contact", handlers.Repo.Contact)
 	mux.Get("/auth/login", handlers.Repo.ShowLogin)
 	mux.Post("/auth/login", handlers.Repo.PostShowLogin)
+	mux.Get("/auth/logout", handlers.Repo.Logout)
 	return mux
 }

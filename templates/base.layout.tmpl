@@ -67,6 +67,15 @@
         <li class="nav-item">
           <a class="nav-link px-3" href="/contact">Contact</a>
         </li>
+        {{if eq .IsAuthenticated 1}}
+        <li class="nav-item">
+          <a class="nav-link px-3" href="/auth/logout">Logout</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+          <a class="nav-link px-3" href="/auth/login">Login</a>
+        </li>
+        {{end}}
       </ul>
     </div>
   </div>
