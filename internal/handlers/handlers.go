@@ -492,3 +492,13 @@ func (repo *Repository) Logout(w http.ResponseWriter, r *http.Request) {
 func (repo *Repository) AdminDashboard(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "admin-dashboard.page.tmpl", &models.TemplateData{})
 }
+
+func (repo *Repository) AdminNewReservations(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, r, "admin-new-reservations.page.tmpl", &models.TemplateData{})
+}
+func (repo *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, r, "admin-reservations.page.tmpl", &models.TemplateData{})
+}
+func (repo *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
+}
