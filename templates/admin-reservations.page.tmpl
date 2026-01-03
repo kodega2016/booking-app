@@ -1,1 +1,61 @@
 {{template "admin" .}}
+
+{{define "page-title"}}Admin Reservations{{end}}
+
+{{define "css"}}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+{{end}}
+
+{{define "js"}}
+<script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+<script>
+$(document).ready( function () {
+    $('#reservations').DataTable();
+} );
+</script>
+{{end}}
+
+{{define "content"}}
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">All Reservation</h4>
+                {{$reservations:= index .Data "reservations"}}
+                <div class="table-responsive">
+                <table class="table" id="reservations">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Room ID</th>
+                        <th>Room Name</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{range $index, $reservation := $reservations}}
+                    <tr>
+                        <td>{{$index}}</td>
+                        <td>{{$reservation.FirstName}}</td>
+                        <td>{{$reservation.LastName}}</td>
+                        <td>{{$reservation.Email}}</td>
+                        <td>{{$reservation.Phone}}</td>
+                        <td>{{HumanDate $reservation.StartDate}}</td>
+                        <td>{{HumanDate $reservation.EndDate}}</td>
+                        <td>{{$reservation.RoomID}}</td>
+                        <td>{{$reservation.Room.RoomName}}</td>
+                    </tr>
+                    {{end}}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}

@@ -1,0 +1,13 @@
+services:
+  database:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=kodega
+      - POSTGRES_PASSWORD=supersecret
+      - POS TGRES_DB=booking
+    volumes:
+      - booking-db-data:/var/lib/postgresql
+volumes:
+  booking-db-data:

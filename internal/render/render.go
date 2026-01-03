@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"booking-app/internal/config"
 	"booking-app/internal/models"
@@ -17,13 +18,19 @@ import (
 )
 
 var (
-	app             *config.AppConfig
-	functions       = template.FuncMap{}
+	app       *config.AppConfig
+	functions = template.FuncMap{
+		"HumanDate": HumanDate,
+	}
 	pathToTemplates = "./templates"
 )
 
 func NewRenderer(a *config.AppConfig) {
 	app = a
+}
+
+func HumanDate(t time.Time) string {
+	return t.Format("2006-01-02")
 }
 
 func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
