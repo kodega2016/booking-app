@@ -1,0 +1,53 @@
+{{template "admin" .}}
+{{define "page-title"}}Admin Reservations{{end}}
+
+{{define "content"}}
+{{$reservation:= index .Data "reservation"}}
+
+
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Reservation Details</h4>
+                <p>
+                    <strong>Arrivals:</strong> {{HumanDate $reservation.StartDate}} <br>
+                    <strong>Departures:</strong> {{HumanDate $reservation.EndDate}} <br>
+                    <strong>Room Number:</strong> {{$reservation.RoomID}} <br>
+                    <strong>Room Name:</strong> {{$reservation.Room.RoomName}} <br>
+                </p>
+                <form>
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" class="form-control" id="firstName" value="{{$reservation.FirstName}}" readonly> 
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" value="{{$reservation.LastName}}" readonly>   
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" value="{{$reservation.Email}}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="text" class="form-control" id="phone" value="{{$reservation.Phone}}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate">Start Date</label>
+                        <input type="text" class="form-control" id="startDate" value="{{HumanDate $reservation.StartDate}}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date</label>
+                        <input type="text" class="form-control" id="endDate" value="{{HumanDate $reservation.EndDate}}" readonly>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="window.location.href='/admin/reservations'">Back to Reservations</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>  
+
+
+
+{{end}}

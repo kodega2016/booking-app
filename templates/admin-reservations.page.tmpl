@@ -35,6 +35,7 @@ $(document).ready( function () {
                         <th>End Date</th>
                         <th>Room ID</th>
                         <th>Room Name</th>
+                        <th>View Details</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -49,6 +50,7 @@ $(document).ready( function () {
                         <td>{{HumanDate $reservation.EndDate}}</td>
                         <td>{{$reservation.RoomID}}</td>
                         <td>{{$reservation.Room.RoomName}}</td>
+                        <td><a href="/admin/reservations/all/{{$reservation.ID}}">View</a></td>
                     </tr>
                     {{end}}
                     </tbody>
