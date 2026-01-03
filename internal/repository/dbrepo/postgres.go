@@ -259,7 +259,6 @@ func (m *postgresDBRepo) AllNewReservations() ([]models.Reservation, error) {
 }
 
 func (m *postgresDBRepo) GetReservationById(id int) (models.Reservation, error) {
-
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 	defer cancel()
 
@@ -279,4 +278,30 @@ func (m *postgresDBRepo) GetReservationById(id int) (models.Reservation, error) 
 	}
 
 	return reservation, nil
+}
+
+func (m *postgresDBRepo) UpdateReservation(reservation models.Reservation) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+
+	query := `
+	update reservation set first_name=$1,last_name=$2,email=$3,phone=$4,updated_at=$5
+	where id=$6
+	`
+
+	res, err := m.DB.ExecContext(ctx, query, reservation.FirstName, reservation.LastName, reservation.Email, reservation.Phone, reservation.UpdatedAt, reservation.ID)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return errors.New("no user updated")
+	}
+
+	return nil
 }
