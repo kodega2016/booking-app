@@ -584,3 +584,11 @@ func (repo *Repository) AdminPostShowReservation(w http.ResponseWriter, r *http.
 	repo.App.Session.Put(r.Context(), "flash", "reservation updated successfully")
 	http.Redirect(w, r, fmt.Sprintf("/admin/reservations/%s", src), http.StatusSeeOther)
 }
+
+func (repo *Repository) AdminProcessReservation(w http.ResponseWriter, r *http.Request) {
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	src := chi.URLParam(r, "src")
+	repo.DB.UpdateProcessedForReservation(id, 1)
+	repo.App.Session.Put(r.Context(), "flash", "reservation marked as processed")
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations/%s", src), http.StatusSeeOther)
+}

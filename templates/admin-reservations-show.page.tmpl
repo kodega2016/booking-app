@@ -45,12 +45,62 @@
                     </div>
                     <button type="submit" class="btn btn-success">Update Reservation</button>
                     <button type="button" class="btn btn-primary" onclick="window.location.href='/admin/reservations/all'">Back to Reservations</button>
+                    <button type="button" class="btn btn-info" onClick="processRes({{$reservation.ID}})">Mark as Processed</button>
                 </form>
             </div>
         </div>
     </div>
 </div>  
 
+{{end}}
 
+{{define "js"}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    let attention = Prompt();
 
+    function notify(msg, msgType) {
+        notie.alert({
+            type: msgType,
+            text: msg,
+        })
+    }
+
+    function notifyModal(title, text, icon, confirmationButtonText) {
+        Swal.fire({
+            title: title,
+            html: text,
+            icon: icon,
+            confirmButtonText: confirmationButtonText
+        })
+    }
+
+    {{with .Error}}
+      notify("{{.}}", "error");
+    {{end}}
+
+    {{with .Flash}}
+      notify("{{.}}", "success");
+    {{end}}
+
+    {{with .Warning}}
+      notify("{{.}}", "warning");
+    {{end}}
+</script>
+
+<script>
+{{$src:=index .StringMap "source"}}
+function processRes(id){
+    attention.custom({
+        title: 'Processing reservation',
+        msg:'Are you sure to process the reservation?',
+        icon:'warning',
+        callback:function(result){
+            if(result!==false){
+                window.location.href="/admin/process-reservation/{{$src}}/"+id
+              }
+          }
+    })
+}
+</script>
 {{end}}

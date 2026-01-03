@@ -63,10 +63,12 @@ function Prompt() {
         }
       },
       preConfirm: () => {
-        return [
-          document.getElementById("start").value,
-          document.getElementById("end").value,
-        ];
+        if (c.preConfirm !== undefined) {
+          return [
+            document.getElementById("start").value,
+            document.getElementById("end").value,
+          ];
+        }
       },
     });
 
