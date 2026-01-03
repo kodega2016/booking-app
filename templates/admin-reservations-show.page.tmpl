@@ -46,6 +46,7 @@
                     <button type="submit" class="btn btn-success">Update Reservation</button>
                     <button type="button" class="btn btn-primary" onclick="window.location.href='/admin/reservations/all'">Back to Reservations</button>
                     <button type="button" class="btn btn-info" onClick="processRes({{$reservation.ID}})">Mark as Processed</button>
+                    <button type="button" class="btn btn-danger" onClick="deleteRes({{$reservation.ID}})">Delete Reservation</button>
                 </form>
             </div>
         </div>
@@ -98,6 +99,21 @@ function processRes(id){
         callback:function(result){
             if(result!==false){
                 window.location.href="/admin/process-reservation/{{$src}}/"+id
+              }
+          }
+    })
+}
+
+
+
+function deleteRes(id){
+    attention.custom({
+        title: 'Delete reservation?',
+        msg:'Are you sure to delete the reservation?',
+        icon:'danger',
+        callback:function(result){
+            if(result!==false){
+                window.location.href="/admin/delete-reservation/{{$src}}/"+id
               }
           }
     })
