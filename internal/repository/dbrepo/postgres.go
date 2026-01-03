@@ -285,7 +285,7 @@ func (m *postgresDBRepo) UpdateReservation(reservation models.Reservation) error
 	defer cancel()
 
 	query := `
-	update reservation set first_name=$1,last_name=$2,email=$3,phone=$4,updated_at=$5
+	update reservations set first_name=$1,last_name=$2,email=$3,phone=$4,updated_at=$5
 	where id=$6
 	`
 
