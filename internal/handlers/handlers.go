@@ -535,7 +535,7 @@ func (repo *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Requ
 
 	src := exploded[3]
 
-	reservation, err := repo.DB.GetReservationById(id)
+	reservation, err := repo.DB.GetReservationByID(id)
 	if err != nil {
 		helpers.ServerError(w, err)
 	}
