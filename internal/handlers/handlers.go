@@ -569,6 +569,7 @@ func (repo *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{
 		StringMap: stringMap,
 		Data:      data,
+		IntMap:    intMap,
 	})
 }
 

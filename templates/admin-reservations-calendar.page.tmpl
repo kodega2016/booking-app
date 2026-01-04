@@ -3,6 +3,7 @@
 {{define "content"}}
 {{$now:=index .Data "now"}}
 {{$rooms:=index .Data "rooms"}}
+{{$dim:=index .IntMap "days_in_month"}}
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
@@ -16,7 +17,23 @@
               </div>
               <div class="clearfix mb-2"></div>
               {{range $rooms}}
-                <h4>{{.RoomName}}</h4>
+              <h4>{{.RoomName}}</h4>
+              <table class="table table-bordered table-sm">
+                <tr class="table-dark">
+                {{range $index:=iterate $dim}}
+                <td class="text-center">
+                {{add $index 1}}
+                </td>
+                {{end}}
+                </tr>
+                <tr class="table-dark">
+                {{range $index:=iterate $dim}}
+                <td class="text-center">
+                  <input class="form-check-input" type="checkbox"/>
+                </td>
+                {{end}}
+                </tr>
+              </table>
               {{end}}
             </div>
         </div>
