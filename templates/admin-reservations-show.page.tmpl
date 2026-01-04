@@ -11,8 +11,8 @@
             <div class="card-body">
                 <h4 class="card-title">Reservation Details</h4>
                 <p>
-                    <strong>Arrivals:</strong> {{HumanDate $reservation.StartDate}} <br>
-                    <strong>Departures:</strong> {{HumanDate $reservation.EndDate}} <br>
+                    <strong>Arrivals:</strong> {{humanDate $reservation.StartDate}} <br>
+                    <strong>Departures:</strong> {{humanDate $reservation.EndDate}} <br>
                     <strong>Room Number:</strong> {{$reservation.RoomID}} <br>
                     <strong>Room Name:</strong> {{$reservation.Room.RoomName}} <br>
                 </p>
@@ -37,11 +37,11 @@
                     </div>
                     <div class="form-group">
                         <label for="startDate">Start Date</label>
-                        <input type="text" class="form-control" id="startDate" name="start_date" value="{{HumanDate $reservation.StartDate}}" readonly>
+                        <input type="text" class="form-control" id="startDate" name="start_date" value="{{humanDate $reservation.StartDate}}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="endDate">End Date</label>
-                        <input type="text" class="form-control" id="endDate" name="end_date" value="{{HumanDate $reservation.EndDate}}" readonly>
+                        <input type="text" class="form-control" id="endDate" name="end_date" value="{{humanDate $reservation.EndDate}}" readonly>
                     </div>
                     <button type="submit" class="btn btn-success">Update Reservation</button>
                     <button type="button" class="btn btn-primary" onclick="window.location.href='/admin/reservations/all'">Back to Reservations</button>

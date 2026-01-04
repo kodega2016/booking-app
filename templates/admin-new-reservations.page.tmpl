@@ -45,8 +45,8 @@ $(document).ready( function () {
                         <td>{{$reservation.LastName}}</td>
                         <td>{{$reservation.Email}}</td>
                         <td>{{$reservation.Phone}}</td>
-                        <td>{{HumanDate $reservation.StartDate}}</td>
-                        <td>{{HumanDate $reservation.EndDate}}</td>
+                        <td>{{humanDate $reservation.StartDate}}</td>
+                        <td>{{humanDate $reservation.EndDate}}</td>
                         <td>{{$reservation.RoomID}}</td>
                         <td>{{$reservation.Room.RoomName}}</td>
                     </tr>

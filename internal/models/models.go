@@ -32,7 +32,6 @@ type User struct {
 type Room struct {
 	ID        int       `json:"id"`
 	RoomName  string    `json:"room_name"`
-	Price     float32   `json:"price"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
