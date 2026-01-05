@@ -575,6 +575,20 @@ func (repo *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http
 			reservationMap[d.Format("2006-1-2")] = 0
 			blockMap[d.Format("2006-1-2")] = 0
 		}
+
+		restrictions, err := repo.DB.GetRestrictionForRoomByDate(x.ID, firstOfMonth, lastOfMonth)
+		if err != nil {
+			helpers.ServerError(w, err)
+			return
+		}
+
+		for _, y := range restrictions {
+			if y.ReservationID > 0 {
+				// It is a reservation
+			} else {
+				// It is a blocked
+			}
+		}
 	}
 
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{
