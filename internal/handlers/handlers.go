@@ -584,9 +584,11 @@ func (repo *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http
 
 		for _, y := range restrictions {
 			if y.ReservationID > 0 {
-				// It is a reservation
+				for d := y.StartDate; !d.After(y.EndDate); d = d.AddDate(0, 0, 1) {
+					reservationMap[d.Format("2006-1-2")] = y.ReservationID
+				}
 			} else {
-				// It is a blocked
+				blockMap[y.StartDate.Format("2006-1-2")] = y.ReservationID
 			}
 		}
 	}
