@@ -528,6 +528,8 @@ func (repo *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http
 		year, _ := strconv.Atoi(r.URL.Query().Get("y"))
 		m, _ := strconv.Atoi(r.URL.Query().Get("m"))
 		now = time.Date(year, time.Month(m), 1, 0, 0, 0, 0, time.UTC)
+
+		fmt.Println("current year:", now)
 	}
 
 	next := now.AddDate(0, 1, 0)
@@ -548,7 +550,6 @@ func (repo *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http
 	stringMap["this_month_year"] = now.Format("2006")
 
 	data := make(map[string]any)
-	data["now"] = now
 
 	currentYear, currentMonth, _ := now.Date()
 	currentLocation := now.Location()
@@ -591,6 +592,13 @@ func (repo *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http
 				blockMap[y.StartDate.Format("2006-1-2")] = y.ReservationID
 			}
 		}
+
+		data[fmt.Sprintf("reservation_map_%d", x.ID)] = reservationMap
+		data[fmt.Sprintf("block_map_%d", x.ID)] = blockMap
+
+		// put the block map into the session
+		repo.App.Session.Put(r.Context(), fmt.Sprintf("block_map_%d", x.ID), blockMap)
+
 	}
 
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{
