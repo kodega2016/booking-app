@@ -3,6 +3,8 @@
 {{define "content"}}
 {{$rooms:=index .Data "rooms"}}
 {{$dim:=index .IntMap "days_in_month"}}
+{{$curMonth:=index .StringMap "this_month"}}
+{{$curYear:=index .StringMap "this_month_year"}}
 <div class="col-md-12">
     <div class="card">
         <div class="card-body">

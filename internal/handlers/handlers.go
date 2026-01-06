@@ -528,8 +528,6 @@ func (repo *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http
 		year, _ := strconv.Atoi(r.URL.Query().Get("y"))
 		m, _ := strconv.Atoi(r.URL.Query().Get("m"))
 		now = time.Date(year, time.Month(m), 1, 0, 0, 0, 0, time.UTC)
-
-		fmt.Println("current year:", now)
 	}
 
 	next := now.AddDate(0, 1, 0)
